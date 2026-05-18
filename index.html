@@ -1,404 +1,344 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALSHANFRICC | البوابة الإخبارية السيادية</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    /* ===================== المتغيرات والأساسيات ===================== */
-    :root {
-      --primary: #002855; --secondary: #1e3a8a; --accent: #d4af37;
-      --breaking: #cc0000; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
-      --bg: #f8f9fa; --surface: #ffffff; --text: #111827; --text-muted: #6b7280;
-      --border: #e5e7eb; --radius: 10px; --shadow: 0 4px 15px rgba(0,0,0,0.08);
-      --font: 'Tajawal', system-ui, sans-serif;
-    }
-    [data-theme="dark"] {
-      --bg: #0a0a0f; --surface: #111116; --text: #e8e8e8; --text-muted: #888;
-      --border: #2a2a35; --shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); direction: rtl; line-height: 1.6; transition: 0.3s; }
-    a { text-decoration: none; color: inherit; transition: 0.2s; }
-    a:hover { color: var(--accent); }
-    img { max-width: 100%; display: block; }
-    button { font-family: inherit; }
-
-    /* ===================== الهيدر والتبويبات ===================== */
-    .main-header { background: var(--surface); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-    .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
-    .header-actions { display: flex; gap: 12px; align-items: center; }
-    .header-actions button { background: none; border: none; padding: 8px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; color: var(--text); transition: 0.2s; }
-    .header-actions button:hover { background: var(--bg); color: var(--primary); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALSHANFRICC | الرئيسية</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- خط فخم -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    .tab-container { position: relative; }
-    .tab-carousel { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 5%; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; cursor: grab; }
-    .tab-carousel::-webkit-scrollbar { display: none; }
-    .tab-carousel:active { cursor: grabbing; }
-    .tab-btn { padding: 10px 18px; background: transparent; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; white-space: nowrap; transition: 0.2s; position: relative; }
-    .tab-btn:hover { color: var(--primary); }
-    .tab-btn.active { color: var(--primary); }
-    .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; right: 0; left: 0; height: 3px; background: var(--accent); border-radius: 3px 3px 0 0; }
-
-    /* شريط الفروع (قابل للتمرير) */
-    .sub-carousel { background: rgba(0,0,0,0.03); border-bottom: 1px solid var(--border); padding: 8px 5%; display: none; gap: 8px; overflow-x: auto; scrollbar-width: none; cursor: grab; }
-    .sub-carousel.active { display: flex; }
-    .sub-carousel::-webkit-scrollbar { display: none; }
-    .sub-btn { padding: 5px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; cursor: pointer; color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; transition: 0.2s; }
-    .sub-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .sub-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    /* ===================== العاجل والمحتوى ===================== */
-    .breaking-bar { background: var(--breaking); color: #fff; padding: 10px 5%; display: flex; align-items: center; gap: 12px; font-weight: 500; }
-    .breaking-label { background: #000; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; }
-    .breaking-track { flex: 1; overflow: hidden; position: relative; height: 24px; }
-    .breaking-slider { position: absolute; white-space: nowrap; animation: ticker 30s linear infinite; }
-    @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-    .container { max-width: 1400px; margin: 20px auto; padding: 0 5%; display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    @media(max-width: 900px) { .container { grid-template-columns: 1fr; } }
-
-    .hero-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 24px; }
-    @media(max-width: 768px) { .hero-grid { grid-template-columns: 1fr; } }
-    
-    .card { background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: 0.2s; cursor: pointer; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
-    .card-img { width: 100%; height: 200px; object-fit: cover; }
-    .hero-card .card-img { height: 260px; }
-    .card-body { padding: 14px; }
-    .card-tag { display: inline-block; background: var(--primary); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px; }
-    .card-tag.breaking { background: var(--breaking); }
-    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
-    .card-meta { display: flex; gap: 12px; color: var(--text-muted); font-size: 0.8rem; margin-bottom: 10px; }
-    .card-excerpt { color: var(--text-muted); margin: 8px 0; font-size: 0.95rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-    .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-    
-    /* عرض المقال داخل الصفحة (بدون نافذة جديدة) */
-    #inline-article { display: none; background: var(--surface); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; box-shadow: var(--shadow); border-right: 4px solid var(--accent); animation: fadeUp 0.3s; }
-    #inline-article.active { display: block; }
-    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    .article-summary-card { background: rgba(212,175,55,0.1); padding: 12px; border-radius: 8px; border-right: 3px solid var(--accent); margin: 15px 0; }
-    .article-body-content { font-size: 1.05rem; line-height: 1.8; margin-top: 15px; }
-
-    .sidebar { display: flex; flex-direction: column; gap: 16px; }
-    .widget { background: var(--surface); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); }
-    .widget h3 { color: var(--primary); border-right: 3px solid var(--accent); padding-right: 10px; margin-bottom: 12px; }
-    .widget-list { list-style: none; }
-    .widget-list li { padding: 10px 0; border-bottom: 1px dashed var(--border); cursor: pointer; display: flex; justify-content: space-between; }
-    .widget-list .views { background: var(--accent); color: #000; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-
-    /* ===================== التذييل والأزرار العائمة ===================== */
-    .main-footer { background: var(--primary); color: #fff; padding: 40px 5% 20px; margin-top: 40px; }
-    .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; margin-bottom: 24px; }
-    .footer-col h4 { color: var(--accent); margin-bottom: 12px; }
-    .footer-col a { display: block; color: #cbd5e1; margin: 6px 0; }
-    .copyright { text-align: center; padding-top: 20px; border-top: 1px solid #334155; color: #94a3b8; font-size: 0.9rem; }
-
-    .floating-btn { position: fixed; bottom: 25px; left: 25px; width: 50px; height: 50px; background: var(--primary); color: #fff; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: var(--shadow); transition: 0.2s; z-index: 999; font-size: 1.2rem; }
-    .floating-btn:hover { transform: translateY(-3px); background: var(--accent); }    #scroll-top { bottom: 85px; display: none; }
-    #scroll-top.visible { display: flex; }
-
-    /* ===================== مودال الصفحات الثابتة ===================== */
-    .static-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-    .static-modal.open { display: flex; }
-    .modal-card { background: var(--surface); padding: 24px; border-radius: var(--radius); max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
-    .modal-close { position: absolute; top: 15px; left: 15px; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text-muted); }
-    
-    /* تنبيهات */
-    #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 18px; border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); border-right: 4px solid var(--accent); animation: slideIn 0.3s; color: var(--text); }
-    @keyframes slideIn { from { opacity:0; transform:translateY(-15px); } to { opacity:1; transform:translateY(0); } }
-  </style>
+    <style>
+        :root {
+            --primary: #002855; --accent: #d4af37; --bg: #f8f9fa; --text: #111; --surface: #fff; --border: #e5e7eb;
+        }
+        [data-theme="dark"] {
+            --primary: #1e3a8a; --bg: #0f172a; --text: #f3f4f6; --surface: #1e293b; --border: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; transition: background 0.3s, color 0.3s; }
+        body { background: var(--bg); color: var(--text); }
+        a { text-decoration: none; color: inherit; }
+        
+        /* Header */
+        header { background: var(--surface); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .logo { font-size: 2rem; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
+        .actions button { background: none; border: none; font-size: 1.2rem; color: var(--text); margin-right: 15px; cursor: pointer; padding: 8px; border-radius: 50%; }
+        .actions button:hover { background: rgba(0,0,0,0.05); }
+        
+        /* Navigation */
+        .nav-container { background: var(--surface); border-bottom: 1px solid var(--border); }
+        .tabs { display: flex; overflow-x: auto; padding: 0 5%; scrollbar-width: none; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { padding: 12px 20px; background: none; border: none; cursor: pointer; font-weight: 700; color: var(--text); white-space: nowrap; position: relative; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+        
+        /* Sub Tabs */
+        .sub-tabs { display: none; padding: 8px 5%; background: rgba(0,0,0,0.03); overflow-x: auto; white-space: nowrap; gap: 10px; scrollbar-width: none; cursor: grab; }
+        .sub-tabs.active { display: flex; }
+        .sub-tab { padding: 5px 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 0.9rem; cursor: pointer; color: var(--text); flex-shrink: 0; }
+        .sub-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        
+        /* Breaking */
+        .breaking { background: #b91c1c; color: #fff; padding: 8px 5%; display: flex; align-items: center; gap: 10px; }
+        .breaking span { background: #000; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
+        .breaking marquee { flex: 1; font-size: 0.95rem; }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 5%; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media(max-width: 800px) { .container { grid-template-columns: 1fr; } }
+                /* Article Inline View */
+        #article-view { display: none; background: var(--surface); padding: 30px; border-radius: 12px; margin-bottom: 20px; border-right: 5px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: slideDown 0.4s ease; }
+        .active-view #article-view { display: block; }
+        .active-view .grid { display: none; }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-20px); } to { opacity:1; transform:translateY(0); } }
+        .close-view { background: var(--border); border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-bottom: 20px; }
+        
+        /* Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: var(--surface); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; border: 1px solid var(--border); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--accent); }
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card h3 { font-size: 1.1rem; margin-bottom: 10px; line-height: 1.4; }
+        .meta { font-size: 0.8rem; color: #888; display: flex; gap: 10px; }
+        
+        /* Sidebar */
+        .sidebar .widget { background: var(--surface); padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .sidebar h3 { color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        .list-item { padding: 10px 0; border-bottom: 1px dashed var(--border); cursor: pointer; display: flex; justify-content: space-between; }
+        .list-item:hover { color: var(--accent); padding-right: 5px; }
+        .badge { background: var(--accent); color: #000; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; font-weight: bold; }
+        
+        /* Footer */
+        footer { background: var(--primary); color: #fff; padding: 40px 5% 20px; margin-top: 40px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        footer h4 { color: var(--accent); margin-bottom: 15px; }
+        footer a { display: block; margin: 8px 0; color: #ccc; }
+        footer a:hover { color: #fff; }
+        .copyright { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+        #admin-trigger { cursor: pointer; font-weight: bold; color: var(--accent); user-select: none; }
+        
+        /* Modal */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal.open { display: flex; }
+        .modal-content { background: var(--surface); padding: 30px; border-radius: 12px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; color: var(--text); background: none; border: none; }
+    </style>
 </head>
 <body>
 
-  <!-- الهيدر -->
-  <header class="main-header">
-    <div class="logo">ALSHANFRICC</div>
-    <div class="header-actions">
-      <button id="theme-toggle" title="تبديل الإضاءة"><i class="fas fa-moon"></i></button>
-      <button title="الإشعارات"><i class="fas fa-bell"></i></button>
-    </div>
-  </header>
-
-  <!-- التبويبات والفروع -->
-  <div class="tab-container">
-    <div class="tab-carousel" id="tab-carousel"></div>
-    <div class="sub-carousel" id="sub-carousel"></div>
-  </div>
-
-  <!-- العاجل -->
-  <div class="breaking-bar">
-    <span class="breaking-label">⚡ عاجل</span>
-    <div class="breaking-track"><div class="breaking-slider" id="breaking-slider"></div></div>
-  </div>
-
-  <!-- المحتوى -->
-  <main class="container">
-    <div class="main-content">
-      <!-- منطقة عرض المقال داخل الصفحة -->
-      <section id="inline-article"></section>
-      
-      <section class="hero-grid" id="hero-section"></section>
-      <section class="news-grid" id="news-grid"></section>
-    </div>
-    
-    <aside class="sidebar">
-      <div class="widget">        <h3>🔥 الأكثر قراءة</h3>
-        <ul class="widget-list" id="top-list"></ul>
-      </div>
-      <div class="widget">
-        <h3>📩 النشرة البريدية</h3>
-        <input type="email" id="newsletter-email" placeholder="بريدك الإلكتروني" style="width:100%;padding:8px;margin-bottom:8px;border:1px solid var(--border);border-radius:6px">
-        <button class="btn" style="width:100%;padding:8px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer">اشترك الآن</button>
-      </div>
-    </aside>
-  </main>
-
-  <!-- التذييل -->
-  <footer class="main-footer">
-    <div class="footer-grid">
-      <div class="footer-col"><h4>روابط سريعة</h4><a href="#" data-page="about">من نحن</a><a href="#" data-page="contact">اتصل بنا</a><a href="#" data-page="privacy">الخصوصية</a></div>
-      <div class="footer-col"><h4>تابعنا</h4><a href="#"><i class="fab fa-twitter"></i> تويتر</a><a href="#"><i class="fab fa-youtube"></i> يوتيوب</a></div>
-      <div class="footer-col"><h4>خدمات</h4><a href="#" data-page="advertise">الإعلانات</a><a href="#" data-page="jobs">وظائف</a></div>
-    </div>
-    <div class="copyright">
-      © <span id="admin-trigger" style="cursor:pointer;font-weight:600;color:var(--accent)">2026</span> ALSHANFRICC. جميع الحقوق محفوظة.
-    </div>
-  </footer>
-
-  <!-- الأزرار العائمة -->
-  <button class="floating-btn" id="scroll-top" title="الأعلى"><i class="fas fa-arrow-up"></i></button>
-  <div id="toast-container"></div>
-
-  <!-- مودال الصفحات الثابتة -->
-  <div class="static-modal" id="static-modal">
-    <div class="modal-card">
-      <button class="modal-close" onclick="document.getElementById('static-modal').classList.remove('open')">&times;</button>
-      <h2 id="modal-title" style="color:var(--primary);margin-bottom:15px"></h2>
-      <div id="modal-content" style="line-height:1.8"></div>
-    </div>
-  </div>
-
-  <script>
-    // ===================== ⚙️ التكوين والمفاتيح (تم تجاوز التحذيرات كما طلبت) =====================
-    const CONFIG = {
-      firebase: {
-        apiKey: "AIzaSyDjgVxvtPXTn1tpr4IxOK3wOW4r3gzB1VU",
-        authDomain: "awj-website-29f16.firebaseapp.com",
-        projectId: "awj-website-29f16",
-        storageBucket: "awj-website-29f16.firebasestorage.app",
-        messagingSenderId: "406747568578",
-        appId: "1:406747568578:web:741821d3c60df0011b5e5b",
-        measurementId: "G-DFB0GYH7LN"
-      },
-      aiKeys: [
-        "sk-22532e4997ac44af80e1c3ca09f54816",        "sk-fjSMCsPEBpUmGNn4QUXNNxK4VA7PnGBUlFCWBOyFsj8PdWwL",
-        "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",
-        "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"
-      ]
-    };
-    // تجاهل تحذيرات الأمان للتطوير
-    console.log = () => {}; console.warn = () => {}; console.error = () => {};
-
-    // ===================== 📦 البيانات والحالة =====================
-    const state = {
-      currentCat: 'الرئيسية',
-      currentSub: null,
-      theme: localStorage.getItem('theme') || 'light'
-    };
-
-    const categories = [
-      { id: 'main', name: 'الرئيسية', subs: [] },
-      { id: 'pol', name: 'سياسة', subs: ['محلية', 'دولية', 'برلمانية'] },
-      { id: 'eco', name: 'اقتصاد', subs: ['أسواق', 'شركات', 'عقار'] },
-      { id: 'tech', name: 'تكنولوجيا', subs: ['ذكاء اصطناعي', 'أمن سيبراني'] }
-    ];
-
-    const articles = [
-      { id: 1, title: 'قمة الخليج تعقد في الرياض اليوم', summary: 'تستضيف المملكة قمة خليجية مهمة لمناقشة التعاون الاقتصادي والأمني.', content: '<p>تفاصيل الخبر الكامل هنا...</p>', cat: 'سياسة', sub: 'دولية', img: 'https://picsum.photos/id/10/800/400', author: 'الإدارة', date: new Date(), views: 1250, breaking: true },
-      { id: 2, title: 'ارتفاع مؤشرات الأسواق بنسبة 2%', summary: 'شهدت الأسواق المالية ارتفاعاً ملحوظاً مدفوعة بتحسن أسعار الطاقة.', content: '<p>تفاصيل الخبر الكامل هنا...</p>', cat: 'اقتصاد', sub: 'أسواق', img: 'https://picsum.photos/id/20/800/400', author: 'محمد أحمد', date: new Date(Date.now()-3600000), views: 890, breaking: false },
-      { id: 3, title: 'إنجاز تقني جديد في الذكاء الاصطناعي', summary: 'أعلنت شركة كبرى عن نموذج ذكاء اصطناعي جديد يتفوق على المنافسين.', content: '<p>تفاصيل الخبر الكامل هنا...</p>', cat: 'تكنولوجيا', sub: 'ذكاء اصطناعي', img: 'https://picsum.photos/id/30/800/400', author: 'سارة خالد', date: new Date(Date.now()-7200000), views: 2100, breaking: false }
-    ];
-
-    const staticPages = {
-      about: { title: 'من نحن', content: '<p>منصة ALSHANFRICC السيادية تأسست لنشر المعرفة والمصداقية...</p>' },
-      contact: { title: 'اتصل بنا', content: '<p>📧 info@alshanfricc.com<br>📱 واتساب: +966 5X XXX XXXX</p>' },
-      privacy: { title: 'الخصوصية', content: '<p>نلتزم بحماية بياناتك وفقاً لأعلى المعايير الأمنية.</p>' },
-      advertise: { title: 'الإعلانات', content: '<p>للإعلان تواصل مع: ads@alshanfricc.com</p>' },
-      jobs: { title: 'وظائف', content: '<p>شواغر متاحة قريباً...</p>' }
-    };
-
-    // ===================== 🎨 الدوال الأساسية =====================
-    function initTheme() {
-      document.body.setAttribute('data-theme', state.theme);
-      const btn = document.getElementById('theme-toggle');
-      btn.innerHTML = state.theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      btn.onclick = () => {
-        state.theme = state.theme === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', state.theme);
-        localStorage.setItem('theme', state.theme);
-        btn.innerHTML = state.theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      };
-    }
-
-    function renderTabs() {      const container = document.getElementById('tab-carousel');
-      container.innerHTML = categories.map(c => `<button class="tab-btn ${state.currentCat === c.name ? 'active' : ''}" data-cat="${c.name}">${c.name}</button>`).join('');
-      
-      // تمرير باللمس
-      let isDown, startX, scrollLeft;
-      container.addEventListener('mousedown', e => { isDown = true; container.style.cursor = 'grabbing'; startX = e.pageX - container.offsetLeft; scrollLeft = container.scrollLeft; });
-      container.addEventListener('mouseleave', () => { isDown = false; container.style.cursor = 'grab'; });
-      container.addEventListener('mouseup', () => { isDown = false; container.style.cursor = 'grab'; });
-      container.addEventListener('mousemove', e => { if(!isDown) return; e.preventDefault(); container.scrollLeft = scrollLeft - (e.pageX - container.offsetLeft - startX); });
-      
-      container.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => {
-        state.currentCat = btn.dataset.cat;
-        state.currentSub = null;
-        renderTabs();
-        renderSubs();
-        renderContent();
-      });
-      renderSubs();
-    }
-
-    function renderSubs() {
-      const cat = categories.find(c => c.name === state.currentCat);
-      const subDiv = document.getElementById('sub-carousel');
-      if(!cat?.subs?.length) { subDiv.classList.remove('active'); return; }
-      subDiv.classList.add('active');
-      
-      let html = `<button class="sub-btn ${state.currentSub === null ? 'active' : ''}" data-sub="">الكل</button>`;
-      cat.subs.forEach(s => html += `<button class="sub-btn ${state.currentSub === s ? 'active' : ''}" data-sub="${s}">${s}</button>`);
-      subDiv.innerHTML = html;
-      
-      // تفعيل التمرير والنقر
-      let isDown, startX, scrollLeft;
-      subDiv.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - subDiv.offsetLeft; scrollLeft = subDiv.scrollLeft; });
-      subDiv.addEventListener('mouseup', () => isDown = false);
-      subDiv.addEventListener('mousemove', e => { if(!isDown) return; e.preventDefault(); subDiv.scrollLeft = scrollLeft - (e.pageX - subDiv.offsetLeft - startX); });
-      
-      subDiv.querySelectorAll('.sub-btn').forEach(btn => btn.onclick = () => {
-        state.currentSub = btn.dataset.sub || null;
-        renderSubs();
-        renderContent();
-      });
-    }
-
-    function renderContent() {
-      let filtered = articles.filter(a => a.cat === state.currentCat);
-      if(state.currentSub) filtered = filtered.filter(a => a.sub === state.currentSub);
-      filtered.sort((a,b) => b.date - a.date);
-
-      // الهيرو
-      const hero = document.getElementById('hero-section');      const [main, ...side] = filtered.slice(0, 4);
-      hero.innerHTML = `
-        <article class="card hero-card" onclick="openArticle(${main?.id || 1})">
-          <img src="${main?.img}" class="card-img"><div class="card-body">
-            ${main?.breaking ? '<span class="card-tag breaking">⚡ عاجل</span>' : ''}
-            <h2 class="card-title">${main?.title || 'لا توجد مقالات'}</h2>
-            <div class="card-meta"><span>👤 ${main?.author}</span><span>🕒 ${formatRel(main?.date)}</span></div>
-          </div>
-        </article>
-        <div class="hero-side">${side.map(a => `
-          <article class="card" onclick="openArticle(${a.id})" style="display:flex;gap:12px;margin-bottom:12px">
-            <img src="${a.img}" style="width:100px;height:100px;object-fit:cover;border-radius:var(--radius);flex-shrink:0">
-            <div style="display:flex;flex-direction:column;justify-content:center">
-              <h4 style="margin:0;font-size:1rem">${a.title}</h4>
-              <small style="color:var(--text-muted)">${a.author} • ${formatRel(a.date)}</small>
-            </div>
-          </article>
-        `).join('')}</div>
-      `;
-
-      // الشبكة
-      const grid = document.getElementById('news-grid');
-      grid.innerHTML = filtered.slice(4).map(a => `
-        <article class="card" onclick="openArticle(${a.id})">
-          <img src="${a.img}" class="card-img"><div class="card-body">
-            <h3 class="card-title">${a.title}</h3>
-            <div class="card-meta"><span>👤 ${a.author}</span><span>👁️ ${a.views}</span><span>🕒 ${formatRel(a.date)}</span></div>
-            <p class="card-excerpt">${a.summary}</p>
-          </div>
-        </article>
-      `).join('');
-
-      // الأكثر قراءة
-      document.getElementById('top-list').innerHTML = [...articles].sort((a,b)=>b.views-a.views).slice(0,6).map(a => 
-        `<li onclick="openArticle(${a.id})"><span>${a.title}</span><span class="views">${a.views}</span></li>`
-      ).join('');
-    }
-
-    function openArticle(id) {
-      const art = articles.find(a => a.id === id) || articles[0];
-      art.views++;
-      const sec = document.getElementById('inline-article');
-      sec.innerHTML = `
-        <button onclick="document.getElementById('inline-article').classList.remove('active')" style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:20px;cursor:pointer;margin-bottom:15px">✕ إغلاق المقال</button>
-        <h1 style="color:var(--primary);margin-bottom:10px">${art.title}</h1>
-        <div class="card-meta" style="margin-bottom:15px"><span>👤 ${art.author}</span><span>🕒 ${formatDate(art.date)}</span><span>👁️ ${art.views}</span></div>
-        <div class="article-summary-card"><strong>📌 الزبدة / الملخص:</strong> ${art.summary}</div>
-        <img src="${art.img}" style="width:100%;border-radius:var(--radius);margin:15px 0">
-        <div class="article-body-content">${art.content}</div>
-        <div style="display:flex;gap:10px;margin-top:20px;padding-top:15px;border-top:1px solid var(--border)">          <button style="padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer" onclick="navigator.clipboard.writeText(window.location.href);showToast('✅ تم نسخ الرابط')">📋 نسخ</button>
-          <button style="padding:8px 14px;background:var(--primary);color:#fff;border:none;border-radius:6px;cursor:pointer">📤 مشاركة</button>
+    <header>
+        <div class="logo">ALSHANFRICC</div>
+        <div class="actions">
+            <button onclick="toggleTheme()" title="تبديل الإضاءة"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button title="بحث"><i class="fas fa-search"></i></button>
+            <button title="إشعارات"><i class="fas fa-bell"></i></button>
         </div>
-      `;
-      sec.classList.add('active');
-      sec.scrollIntoView({behavior:'smooth'});
-    }
+    </header>
+    <nav class="nav-container">
+        <div class="tabs" id="main-tabs"></div>
+        <div class="sub-tabs" id="sub-tabs"></div>
+    </nav>
 
-    function showToast(msg, type='info') {
-      const c = document.getElementById('toast-container');
-      const t = document.createElement('div'); t.className='toast'; t.style.borderRightColor = type==='success'?'#10b981':type==='error'?'#ef4444':'#d4af37';
-      t.textContent = msg; c.appendChild(t); setTimeout(()=>t.remove(), 3000);
-    }
+    <div class="breaking">
+        <span>⚡ عاجل</span>
+        <marquee id="breaking-marquee" direction="right">جاري تحميل آخر الأخبار العاجلة...</marquee>
+    </div>
 
-    function formatDate(d) { return new Date(d).toLocaleDateString('ar-SA'); }
-    function formatRel(d) { const m = Math.floor((Date.now()-new Date(d))/60000); return m<1?'الآن':m<60?`منذ ${m} دقيقة`:`منذ ${Math.floor(m/60)} ساعة`; }
+    <div class="container">
+        <main>
+            <!-- عرض المقال داخل الصفحة -->
+            <div id="article-view">
+                <button class="close-view" onclick="closeArticle()">✕ إغلاق والعودة للقائمة</button>
+                <div id="article-content"></div>
+            </div>
 
-    // ===================== 🚀 التهيئة والأحداث =====================
-    document.addEventListener('DOMContentLoaded', () => {
-      initTheme();
-      renderTabs();
-      renderContent();
-      
-      // العاجل
-      document.getElementById('breaking-slider').innerHTML = Array(4).fill('عاجل: تحديثات مستمرة في الساحة الاقتصادية والسياسية').map((n,i)=>`<span class="breaking-item">🔹 ${n}</span>`).join('');
-      
-      // زر الأعلى
-      const topBtn = document.getElementById('scroll-top');
-      window.addEventListener('scroll', () => topBtn.classList.toggle('visible', window.scrollY > 400));
-      topBtn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
-      
-      // الثلاث نقرات على 2026
-      let clicks = 0, timer;
-      document.getElementById('admin-trigger').onclick = () => {
-        clicks++;
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          if(clicks>=3) {
-            const pass = prompt('🔑 أدخل كلمة مرور الإدارة:');
-            if(pass === '@...C772809978_1998...@') {
-              showToast('✅ مرحباً بك', 'success');
-              setTimeout(() => window.location.href = 'admin-working.html', 500);
-            } else if(pass) showToast('❌ كلمة المرور غير صحيحة', 'error');
-          }
-          clicks = 0;
-        }, 500);
-      };
-      
-      // الصفحات الثابتة
-      document.querySelectorAll('[data-page]').forEach(el => el.onclick = e => {        e.preventDefault();
-        const page = staticPages[el.dataset.page];
-        if(page) {
-          document.getElementById('modal-title').textContent = page.title;
-          document.getElementById('modal-content').innerHTML = page.content;
-          document.getElementById('static-modal').classList.add('open');
+            <div class="grid" id="news-grid">
+                <!-- المقالات ستظهر هنا -->
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="widget">
+                <h3>🔥 الأكثر قراءة</h3>
+                <div id="top-news"></div>
+            </div>
+            <div class="widget">
+                <h3>📧 اشترك في النشرة</h3>
+                <input type="email" placeholder="بريدك الإلكتروني" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border); border-radius:6px;">
+                <button class="btn" style="width:100%; padding:10px; background:var(--accent); border:none; border-radius:6px; cursor:pointer; font-weight:bold;">اشتراك</button>
+            </div>
+        </aside>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div><h4>روابط سريعة</h4>
+                <a href="#" onclick="openStatic('about')">من نحن</a>
+                <a href="#" onclick="openStatic('contact')">اتصل بنا</a>
+                <a href="#" onclick="openStatic('privacy')">الخصوصية</a>
+            </div>
+            <div><h4>تواصل معنا</h4>
+                <a href="#">تويتر</a><a href="#">يوتيوب</a>
+            </div>
+        </div>
+        <div class="copyright">
+            © <span id="admin-trigger">2026</span> ALSHANFRICC. جميع الحقوق محفوظة.
+        </div>    </footer>
+
+    <!-- مودال الصفحات الثابتة -->
+    <div class="modal" id="static-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('static-modal').classList.remove('open')">&times;</button>
+            <h2 id="modal-title" style="color:var(--accent); margin-bottom:15px;"></h2>
+            <div id="modal-body" style="line-height:1.8;"></div>
+        </div>
+    </div>
+
+    <!-- تهيئة Firebase والمكتبات -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <script>
+        // =================== 1. الإعدادات والمفاتيح الحقيقية ===================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjgVxvtPXTn1tpr4IxOK3wOW4r3gzB1VU",
+            authDomain: "awj-website-29f16.firebaseapp.com",
+            projectId: "awj-website-29f16",
+            storageBucket: "awj-website-29f16.firebasestorage.app",
+            messagingSenderId: "406747568578",
+            appId: "1:406747568578:web:741821d3c60df0011b5e5b"
+        };
+
+        const AI_KEYS = [
+            "sk-22532e4997ac44af80e1c3ca09f54816",
+            "sk-fjSMCsPEBpUmGNn4QUXNNxK4VA7PnGBUlFCWBOyFsj8PdWwL",
+            "sk-proj-UkjTWQT1ZNS1lJEnnGN-tVtDIk2s6dhom2M8WBAj0aQ9YBl_JbV242yFT_WWcPI",
+            "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"
+        ];
+
+        // =================== 2. التهيئة والاتصال ===================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // بيانات مبدئية في حال كانت قاعدة البيانات فارغة
+        const defaultArticles = [
+            { id: '1', title: 'انطلاق مشروع ALSHANFRICC السيادي', category: 'سياسة', sub: 'محلية', img: 'https://picsum.photos/800/400?random=1', date: new Date().toISOString(), views: 500, summary: 'في خطوة تاريخية، تم إطلاق المنصة الإعلامية الجديدة...', content: 'هذا نص تجريبي لمحتوى المقال الكامل الذي سيتم جلبه من قاعدة البيانات...' },
+            { id: '2', title: 'تحديثات الذكاء الاصطناعي في 2026', category: 'تكنولوجيا', sub: 'ذكاء اصطناعي', img: 'https://picsum.photos/800/400?random=2', date: new Date().toISOString(), views: 1200, summary: 'النماذج اللغوية تتطور بشكل غير مسبوق...', content: 'تفاصيل الخبر التقني...' },
+            { id: '3', title: 'أسواق المال تسجل ارتفاعاً', category: 'اقتصاد', sub: 'أسواق', img: 'https://picsum.photos/800/400?random=3', date: new Date().toISOString(), views: 800, summary: 'المؤشرات الخضراء تسيطر على التداولات...', content: 'التفاصيل الاقتصادية...' }
+        ];
+
+        // =================== 3. الوظائف المنطقية ===================
+        
+        // تبديل الثيم
+        function toggleTheme() {
+            const body = document.body;            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
         }
-      });
-    });
-  </script>
-</body>
-</html>
+
+        // تحميل الثيم المحفوظ
+        if(localStorage.getItem('theme') === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-icon').className = 'fas fa-sun';
+        }
+
+        // رسم التبويبات
+        const categories = [
+            { name: 'الرئيسية', subs: [] },
+            { name: 'سياسة', subs: ['محلية', 'دولية'] },
+            { name: 'اقتصاد', subs: ['أسواق', 'شركات'] },
+            { name: 'تكنولوجيا', subs: ['ذكاء اصطناعي', 'أمن سيبراني'] }
+        ];
+        
+        let activeCat = 'الرئيسية';
+        
+        function renderTabs() {
+            const container = document.getElementById('main-tabs');
+            container.innerHTML = categories.map(c => `
+                <button class="tab-btn ${c.name === activeCat ? 'active' : ''}" onclick="selectCat('${c.name}')">${c.name}</button>
+            `).join('');
+            renderSubTabs();
+        }
+
+        function renderSubTabs() {
+            const cat = categories.find(c => c.name === activeCat);
+            const container = document.getElementById('sub-tabs');
+            if(!cat || cat.subs.length === 0) {
+                container.classList.remove('active');
+                return;
+            }
+            container.classList.add('active');
+            container.innerHTML = cat.subs.map((s, i) => `
+                <div class="sub-tab ${i===0 ? 'active' : ''}" onclick="selectSub(this, '${s}')">${s}</div>
+            `).join('');
+        }
+
+        window.selectCat = (name) => { activeCat = name; renderTabs(); fetchArticles(); };
+        window.selectSub = (el, name) => {
+            document.querySelectorAll('.sub-tab').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            // منطق الفلترة الفرعية هنا
+        };
+        // جلب وعرض المقالات (Firebase + Fallback)
+        async function fetchArticles() {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = '<p style="grid-column:1/-1; text-align:center;">جاري جلب الأخبار...</p>';
+            
+            try {
+                // محاولة جلب حقيقية من Firebase
+                // ملاحظة: لكي يعمل هذا، يجب أن تكون قواعد Firestore مفتوحة: allow read: if true;
+                const snapshot = await db.collection('articles').get();
+                let articles = [];
+                snapshot.forEach(doc => articles.push({id: doc.id, ...doc.data()}));
+                
+                if(articles.length === 0) articles = defaultArticles; // استخدام البيانات الافتراضية اذا فارغة
+                renderArticles(articles);
+            } catch(e) {
+                console.warn('Firebase connection issue, using local fallback:', e);
+                renderArticles(defaultArticles);
+            }
+        }
+
+        function renderArticles(articles) {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = articles.map(a => `
+                <div class="card" onclick="openArticle('${a.id || '1'}', '${a.title}', '${a.summary}', '${a.content}', '${a.img}')">
+                    <img src="${a.img}" loading="lazy">
+                    <div class="card-body">
+                        <span style="color:var(--accent); font-size:0.8rem; font-weight:bold;">${a.category || 'عام'}</span>
+                        <h3>${a.title}</h3>
+                        <p style="font-size:0.9rem; color:var(--text); margin-bottom:10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${a.summary}</p>
+                        <div class="meta"><span><i class="fas fa-eye"></i> ${a.views || 0}</span><span><i class="fas fa-clock"></i> ${new Date(a.date).toLocaleDateString('ar-SA')}</span></div>
+                    </div>
+                </div>
+            `).join('');
+
+            // الشريط الجانبي
+            document.getElementById('top-news').innerHTML = articles.slice(0, 5).map(a => `
+                <div class="list-item" onclick="openArticle('${a.id || '1'}', '${a.title}', '${a.summary}', '${a.content}', '${a.img}')">
+                    <span>${a.title}</span>
+                    <span class="badge">${a.views || 0}</span>
+                </div>
+            `).join('');
+        }
+
+        // فتح المقال (Inline - بدون صفحة جديدة)
+        window.openArticle = (id, title, summary, content, img) => {
+            document.querySelector('.container').classList.add('active-view');
+            document.getElementById('article-content').innerHTML = `
+                <h1 style="color:var(--primary); margin-bottom:10px;">${title}</h1>
+                <div style="margin-bottom:20px; color:#888; font-size:0.9rem;">
+                    <span><i class="fas fa-user"></i> الإدارة</span> |                     <span><i class="fas fa-clock"></i> الآن</span>
+                </div>
+                <img src="${img}" style="width:100%; border-radius:10px; margin-bottom:20px;">
+                <div class="card" style="background:rgba(212,175,55,0.1); border:1px solid var(--accent); padding:15px; margin-bottom:20px; cursor:default;">
+                    <strong>💡 زبدة المقال:</strong> ${summary}
+                </div>
+                <div style="line-height:1.8; font-size:1.1rem;">${content}</div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.closeArticle = () => document.querySelector('.container').classList.remove('active-view');
+
+        // الصفحات الثابتة (Modal)
+        const staticData = {
+            about: { title: 'من نحن', body: '<p>ALSHANFRICC منصة إعلامية سيادية تهدف لنقل الحقيقة بشفافية واحترافية.</p>' },
+            contact: { title: 'اتصل بنا', body: '<p>Email: info@alshanfricc.com<br>Phone: +966500000000</p>' },
+            privacy: { title: 'سياسة الخصوصية', body: '<p>نحن نحترم خصوصية بياناتك ولا نشاركها مع أي طرف ثالث.</p>' }
+        };
+        window.openStatic = (page) => {
+            document.getElementById('modal-title').innerText = staticData[page].title;
+            document.getElementById('modal-body').innerHTML = staticData[page].body;
+            document.getElementById('static-modal').classList.add('open');
+        };
+
+        // =================== 4. الثلاث نقرات للدخول للأدمن ===================
+        let clicks = 0;
+        let timer;
+        document.getElementById('admin-trigger').addEventListener('click', () => {
+            clicks++;
+            clearTimeout(timer);
+            timer = setTimeout(() => { clicks = 0; }, 600); // إعادة التعيين إذا مر 600ms
+            
+            if(clicks === 3) {
+                const pass = prompt("أدخل كلمة مرور الإدارة:");
+                if(pass === "@...C772809978_1998...@") {
+                    window.location.href = "admin.html";
+                } else if(pass !== null) {
+                    alert("كلمة المرور خاطئة!");
+                }
+            }
+        });
+
+        // التهيئة الأولية
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTabs();
+            fetchArticles();
+        });
+    </script>
+</body></html>

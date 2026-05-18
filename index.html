@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الموقع</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- إضافة FontAwesome للأيقونات (اختياري) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header id="site-header"></header>
+
+    <main id="site-body">
+        <section id="posts-section"><h2>أحدث المنشورات</h2><div id="posts-container"></div></section>
+        <section id="links-section"><h2>أدوات وخدمات</h2><div id="links-container"></div></section>
+    </main>
+
+    <footer id="site-footer">
+        <p>© <span id="year">2026</span> جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

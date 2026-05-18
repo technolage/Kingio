@@ -1,1075 +1,432 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>أوج | منصة المعرفة السيادية</title>
-    <meta name="description" content="أوج - منصة معرفة سيادية تقدم محتوى استراتيجياً وفلسفياً وعلمياً">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <style>
-        :root { --gold: #D4AF37; --dark: #050505; --card: #0C0F17; --text: #eef; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--dark); color: var(--text);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            direction: rtl; line-height: 1.6; min-height: 100vh;
-        }
-        
-        #loadingScreen {
-            position: fixed; inset: 0; background: #000000ee;
-            backdrop-filter: blur(8px); z-index: 10000;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            transition: opacity 0.8s ease;
-        }
-        .brain-container { width: 100px; height: 100px; position: relative; }
-        .brain-icon {
-            font-size: 4rem; color: var(--gold);
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            animation: brainPulse 1.2s infinite alternate;
-        }
-        @keyframes brainPulse {
-            0% { transform: translate(-50%, -50%) scale(0.9); text-shadow: 0 0 0px var(--gold); }
-            100% { transform: translate(-50%, -50%) scale(1.1); text-shadow: 0 0 20px var(--gold); }
-        }
-        .neuron-line {
-            position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(0,0,0,0) 70%);
-            animation: electricPulse 1.5s infinite;
-        }
-        @keyframes electricPulse {
-            0% { opacity: 0.2; transform: scale(0.8); }
-            100% { opacity: 0.8; transform: scale(1.2); }
-        }
-        .loading-track { width: 280px; height: 4px; background: #2a2a35; margin-top: 30px; border-radius: 4px; overflow: hidden; }
-        .loading-progress { width: 0%; height: 100%; background: var(--gold); transition: width 0.08s linear; }
-        .loading-text { margin-top: 15px; color: var(--gold); font-size: 0.9rem; letter-spacing: 1px; }
-        
-        header {
-            position: sticky; top: 0;
-            background: rgba(5,5,5,0.96); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(212,175,55,0.2);
-            padding: 1rem 5%; z-index: 1000;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .logo { font-size: 2rem; font-weight: bold; color: var(--gold); letter-spacing: 2px; }
-        .header-icons { display: flex; gap: 1.2rem; }
-        .header-icons i { font-size: 1.4rem; cursor: pointer; transition: 0.2s; color: #ccc; }
-        .header-icons i:hover { color: var(--gold); transform: scale(1.1); }
-        
-        .tabs-row, .sub-row {
-            overflow-x: auto; white-space: nowrap;
-            padding: 0.6rem 5%; background: #0A0A0F;
-            border-bottom: 1px solid #1e1e2a;
-            scrollbar-width: thin;
-            scrollbar-color: var(--gold) #1e1e2a;
-        }
-        .tabs-row::-webkit-scrollbar, .sub-row::-webkit-scrollbar { height: 4px; }
-        .tabs-row::-webkit-scrollbar-thumb, .sub-row::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
-        .tab-btn, .sub-btn {
-            display: inline-block; background: transparent;
-            border: 1px solid #2a2a35; color: #bbb;
-            padding: 0.5rem 1.5rem; border-radius: 40px;
-            margin-left: 0.7rem; cursor: pointer; transition: 0.2s;
-            font-size: 0.9rem;
-        }
-        .tab-btn:hover, .sub-btn:hover { border-color: var(--gold); color: var(--gold); }
-        .tab-btn.active, .sub-btn.active { background: var(--gold); color: #000; border-color: var(--gold); font-weight: bold; }
-        .sub-row { display: none; }
-        .sub-row.show { display: block; }
-        
-        .articles-grid {
-            max-width: 1300px; margin: 2rem auto; padding: 0 5%;
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem;
-        }
-        .article-card {
-            background: var(--card); border-radius: 1.2rem; overflow: hidden;
-            border-right: 4px solid var(--gold); transition: 0.3s;
-            position: relative; display: flex; flex-direction: column;
-        }
-        .article-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(212,175,55,0.1); }
-        .article-img { width: 100%; height: 200px; object-fit: cover; background: #11131e; }
-        .article-img-placeholder {
-            width: 100%; height: 200px; background: #1a1c25;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .article-content { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
-        .article-title { font-size: 1.3rem; font-weight: bold; color: var(--gold); cursor: pointer; margin-bottom: 0.5rem; line-height: 1.4; }
-        .article-title:hover { text-decoration: underline; }
-        .meta { display: flex; gap: 1rem; font-size: 0.75rem; color: #aaa; margin: 0.5rem 0; flex-wrap: wrap; }
-        .meta span { display: flex; align-items: center; gap: 0.3rem; }
-        .article-preview { color: #ccc; font-size: 0.9rem; margin-top: 0.5rem; flex: 1; }
-        .article-actions { position: absolute; top: 0.8rem; left: 0.8rem; z-index: 10; }
-        .dots-btn {
-            background: rgba(0,0,0,0.7); border: none; color: white;
-            width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
-        }
-        .dots-btn:hover { background: var(--gold); color: #000; }
-        .dropdown {
-            position: absolute; left: 0; top: 2.5rem;
-            background: #1e1e2a; border-radius: 1rem;
-            width: 160px; display: none; flex-direction: column;
-            z-index: 20; overflow: hidden; border: 1px solid #2a2a35;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-        }
-        .dropdown.show { display: flex; }
-        .dropdown button {
-            background: none; border: none; color: #eee;
-            padding: 0.7rem 1rem; text-align: right; cursor: pointer;
-            width: 100%; transition: 0.2s; font-size: 0.85rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .dropdown button:hover { background: #2a2a35; color: var(--gold); }
-        .summary-trigger {
-            background: rgba(212,175,55,0.15); border: 1px solid var(--gold);
-            color: var(--gold); padding: 0.3rem 1rem; border-radius: 30px;
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            margin-top: 0.8rem; cursor: pointer; font-size: 0.85rem;
-            transition: 0.2s; width: fit-content;
-        }
-        .summary-trigger:hover { background: var(--gold); color: #000; }
-        
-        .full-article-container { max-width: 1000px; margin: auto; width: 100%; padding: 0 5%; }
-        .full-article { padding: 2rem; }
-        .full-article .article-title { font-size: 1.8rem; margin-bottom: 1rem; }
-        .full-article .meta { font-size: 0.85rem; margin-bottom: 1.5rem; }
-        .article-body { font-size: 1.05rem; line-height: 1.8; color: #ddd; }
-        .article-body p { margin-bottom: 1rem; }
-        .image-block { text-align: center; margin: 1.5rem 0; }
-        .image-block img { max-width: 100%; border-radius: 1rem; }
-        .image-block .caption { color: #888; font-size: 0.85rem; margin-top: 0.5rem; }
-        pre {
-            background: #0D0F14; padding: 1rem; border-radius: 1rem;
-            overflow-x: auto; position: relative; margin: 1rem 0;
-            border: 1px solid #1e1e2a;
-        }
-        .copy-code {
-            position: absolute; top: 0.5rem; left: 0.6rem;
-            background: var(--gold); color: black; border: none;
-            border-radius: 6px; padding: 4px 10px; font-size: 0.75rem;
-            cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        .copy-code:hover { transform: scale(1.05); }
-        .summary-box {
-            background: rgba(212,175,55,0.1); padding: 1.2rem;
-            border-right: 4px solid var(--gold); border-radius: 0.8rem;
-            margin: 1.5rem 0;
-        }
-        .back-btn {
-            background: var(--gold); color: #000; border: none;
-            padding: 0.6rem 1.5rem; border-radius: 30px; cursor: pointer;
-            font-weight: bold; margin-top: 2rem; transition: 0.2s;
-        }
-        .back-btn:hover { opacity: 0.85; transform: scale(0.98); }
-        
-        .bottom-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
-            max-width: 1300px; margin: 2rem auto; padding: 0 5%;
-        }
-        .bottom-card {
-            background: #0A0B10; border-radius: 1rem; padding: 1.2rem;
-            border: 1px solid #1e1e2a;
-        }
-        .bottom-card h4 { color: var(--gold); margin-bottom: 1rem; font-size: 1.1rem; }
-        .bottom-card ul { list-style: none; }
-        .bottom-card li {
-            padding: 0.6rem 0; border-bottom: 1px dashed #222;
-            cursor: pointer; font-size: 0.9rem; transition: 0.2s;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .bottom-card li:hover { color: var(--gold); }
-        .bottom-card li:last-child { border-bottom: none; }
-        .view-count { color: #666; font-size: 0.8rem; }
-        
-        footer {
-            text-align: center; padding: 2rem;
-            border-top: 1px solid #1a1a1a; color: #666; margin-top: 2rem;
-        }
-        .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-bottom: 0.8rem; flex-wrap: wrap; }
-        .footer-links span { cursor: pointer; color: #aaa; transition: 0.2s; }
-        .footer-links span:hover { color: var(--gold); }
-        .copyright { cursor: pointer; transition: 0.2s; }
-        .copyright:hover { color: var(--gold); }
-        
-        .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.92); align-items: center;
-            justify-content: center; z-index: 20000; padding: 1rem;
-        }
-        .modal.show { display: flex; }
-        .modal-card {
-            background: #111; border: 1px solid var(--gold);
-            border-radius: 1.5rem; width: 90%; max-width: 500px;
-            padding: 1.5rem; max-height: 80vh; overflow-y: auto;
-            position: relative;
-        }
-        .modal-close {
-            position: absolute; top: 1rem; left: 1rem;
-            background: none; border: none; color: #aaa;
-            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
-        }
-        .modal-close:hover { color: var(--gold); }
-        .modal-title { color: var(--gold); margin-bottom: 1rem; font-size: 1.3rem; }
-        .search-input {
-            width: 100%; padding: 0.8rem 1.2rem;
-            background: #1a1a1a; border: 1px solid #333;
-            border-radius: 40px; color: white; margin: 1rem 0;
-            font-size: 1rem;
-        }
-        .search-input:focus { outline: none; border-color: var(--gold); }
-        .search-result-item {
-            padding: 0.8rem; border-bottom: 1px solid #222;
-            cursor: pointer; transition: 0.2s; border-radius: 0.5rem;
-        }
-        .search-result-item:hover { background: #1a1a1a; color: var(--gold); }
-        .search-result-item:last-child { border-bottom: none; }
-        .btn-primary {
-            background: var(--gold); color: #000; border: none;
-            padding: 0.7rem; width: 100%; border-radius: 40px;
-            font-weight: bold; cursor: pointer; font-size: 1rem;
-            transition: 0.2s; margin-top: 0.5rem;
-        }
-        .btn-primary:hover { opacity: 0.85; }
-        
-        .scroll-top {
-            position: fixed; bottom: 1.5rem; left: 1.5rem;
-            background: var(--gold); width: 45px; height: 45px;
-            border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; cursor: pointer; opacity: 0;
-            transition: 0.3s; z-index: 999; border: none;
-        }
-        .scroll-top.visible { opacity: 1; }
-        .scroll-top:hover { transform: scale(1.1); }
-        
-        .empty-state {
-            text-align: center; padding: 3rem;
-            color: #888; font-size: 1.1rem;
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-        
-        @media (max-width: 900px) {
-            .articles-grid { grid-template-columns: 1fr; }
-            .bottom-grid { grid-template-columns: 1fr; }
-            .logo { font-size: 1.5rem; }
-        }
-        @media (max-width: 500px) {
-            header { padding: 0.8rem 3%; }
-            .tabs-row, .sub-row { padding: 0.5rem 3%; }
-            .articles-grid { padding: 0 3%; gap: 1rem; }
-            .article-title { font-size: 1.1rem; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALSHANFRICC | البوابة الإخبارية السيادية</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-<div id="loadingScreen">
-    <div class="brain-container">
-        <div class="neuron-line"></div>
-        <i class="fas fa-brain brain-icon"></i>
+  <!-- الشريط العلوي -->
+  <header class="main-header">
+    <div class="logo">ALSHANFRICC</div>
+    <div class="header-actions">
+      <button id="search-btn" title="بحث"><i class="fas fa-search"></i></button>
+      <button id="theme-btn" title="تبديل المظهر"><i class="fas fa-moon"></i></button>
+      <button id="notif-btn" title="الإشعارات">
+        <i class="fas fa-bell"></i>
+        <span class="notif-badge" id="notif-count">0</span>
+      </button>
     </div>
-    <div class="loading-track"><div id="loadProgressBar" class="loading-progress"></div></div>
-    <div class="loading-text" id="loadingText">تنشيط الخلايا العصبية...</div>
-</div>
+  </header>
 
-<<header>
-    <div class="logo">AWJ</div>
-    <div class="header-icons">
-        <i class="fas fa-search" id="openSearchBtn" title="بحث"></i>
-        <i class="fas fa-envelope" id="openSubscribeBtn" title="اشتراك"></i>
+  <!-- شريط التبويبات -->
+  <nav class="tab-carousel" id="tab-carousel">
+    <button class="tab-btn active" data-cat="الرئيسية">الرئيسية</button>
+    <button class="tab-btn" data-cat="سياسة">سياسة</button>
+    <button class="tab-btn" data-cat="اقتصاد">اقتصاد</button>
+    <button class="tab-btn" data-cat="رياضة">رياضة</button>
+    <button class="tab-btn" data-cat="تكنولوجيا">تكنولوجيا</button>
+  </nav>
+
+  <!-- شريط العاجل -->
+  <div class="breaking-bar">
+    <span class="breaking-label">⚡ عاجل</span>
+    <div class="breaking-track">
+      <div class="breaking-slider" id="breaking-slider"></div>
     </div>
-</header>
+  </div>
 
-<div id="tabsContainer" class="tabs-row"></div>
-<div id="subContainer" class="sub-row"></div>
+  <!-- المحتوى الرئيسي -->
+  <main class="container">
+    <div class="main-content">
+      <!-- قسم الهيرو -->
+      <section class="hero-grid" id="hero-section"></section>
+      
+      <!-- شبكة الأخبار -->
+      <section class="news-grid" id="news-grid"></section>
+    </div>    
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar">
+      <div class="widget">
+        <h3>🔥 الأكثر قراءة</h3>
+        <ul class="widget-list" id="top-list"></ul>
+      </div>
+      <div class="widget">
+        <h3>📩 النشرة البريدية</h3>
+        <input type="email" id="newsletter-email" placeholder="بريدك الإلكتروني">
+        <button class="btn btn-primary" onclick="subscribeNewsletter()">اشترك الآن</button>
+      </div>
+    </aside>
+  </main>
 
-<div id="articlesGrid" class="articles-grid"></div>
-
-<div class="bottom-grid">
-    <div class="bottom-card"><h4>🕒 أحدث المقالات</h4><ul id="latestList"></ul></div>
-    <div class="bottom-card"><h4>👑 الأكثر مشاهدة</h4><ul id="mostViewedList"></ul></div>
-    <div class="bottom-card"><h4>🔗 ذات صلة</h4><ul id="relatedList"></ul></div>
-</div>
-
-<<footer>
-    <div class="footer-links">
-        <span onclick="openStaticPage('about')">من نحن</span>
-        <span onclick="openStaticPage('privacy')">الخصوصية</span>
-        <span onclick="openStaticPage('cookies')">سياسة الكوكيز</span>
-        <span onclick="openStaticPage('terms')">شروط الاستخدام</span>
+  <!-- التذييل مع عنصر 2026 السحري -->
+  <footer class="main-footer">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>روابط سريعة</h4>
+        <a href="#">الرئيسية</a>
+        <a href="#">سياسة</a>
+        <a href="#">اقتصاد</a>
+        <a href="#">رياضة</a>
+      </div>
+      <div class="footer-col">
+        <h4>تابعنا</h4>
+        <a href="#"><i class="fab fa-twitter"></i> تويتر</a>
+        <a href="#"><i class="fab fa-youtube"></i> يوتيوب</a>
+        <a href="#"><i class="fab fa-telegram"></i> تيليجرام</a>
+      </div>
+      <div class="footer-col">
+        <h4>خدمات</h4>
+        <a href="#">الإعلانات</a>
+        <a href="#">وظائف</a>
+        <a href="#">اتصل بنا</a>
+        <a href="#">الخصوصية</a>
+      </div>
     </div>
-    <p>جميع الحقوق محفوظة © <span class="copyright" id="vaultTrigger">2026</span> | أوج</p>
-</footer>
-
-<div id="searchModal" class="modal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeModal('searchModal')"><i class="fas fa-times"></i></button>
-        <h3 class="modal-title">🔍 بحث</h3>
-        <input type="text" id="searchInput" class="search-input" placeholder="اكتب كلمة مفتاحية...">
-        <div id="searchResults"></div>
-    </div>
-</div>
-
-<div id="subscribeModal" class="modal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeModal('subscribeModal')"><i class="fas fa-times"></i></button>
-        <h3 class="modal-title">📧 اشترك في النشرة</h3>
-        <input type="email" id="subEmail" class="search-input" placeholder="بريدك الإلكتروني">
-        <button id="doSubscribeBtn" class="btn-primary">اشتراك</button>
-        <div id="subMsg" style="margin-top:1rem; text-align:center;"></div>
-    </div>
-</div>
-
-<div id="summaryModal" class="modal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeModal('summaryModal')"><i class="fas fa-times"></i></button>
-        <h3 class="modal-title">📖 زبدة المقال</h3>
-        <div id="summaryContent"></div>
-    </div>
-</div>
-
-<div id="vaultModal" class="modal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeModal('vaultModal')"><i class="fas fa-times"></i></button>
-        <h3 class="modal-title">🔐 الخزنة السرية</h3>
-        <div id="vaultContent"></div>
-    </div>
-</div>
-
-<div id="staticModal" class="modal">
-    <div class="modal-card">
-        <button class="modal-close" onclick="closeModal('staticModal')"><i class="fas fa-times"></i></button>
-        <h3 class="modal-title" id="staticTitle"></h3>
-        <div id="staticBody"></div>
-    </div>
-</div>
-
-<button id="scrollTopBtn" class="scroll-top"><i class="fas fa-arrow-up"></i></button>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDjgVxvtPXTn1tpr4IxOK3wOW4r3gzB1VU",
-        authDomain: "awj-website-29f16.firebaseapp.com",
-        projectId: "awj-website-29f16",
-        storageBucket: "awj-website-29f16.firebasestorage.app",
-        messagingSenderId: "406747568578",
-        appId: "1:406747568578:web:741821d3c60df0011b5e5b",
-        measurementId: "G-DFB0GYH7LN"
-    };
     
-    let db;
-    try {
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-    } catch (e) {
-        console.error("Firebase init error:", e);
-        document.getElementById('articlesGrid').innerHTML = '<div class="empty-state">⚠️ تعذر الاتصال بقاعدة البيانات</div>';
-    }
+    <div class="copyright">
+      © <span id="admin-trigger" style="cursor:pointer;font-weight:600" title="Hint: Triple click me">2026</span> ALSHANFRICC. جميع الحقوق محفوظة.
+    </div>
+  </footer>
 
-    let allArticles = [];
-    let categories = [];
-    let currentCat = null;
-    let currentSub = null;
-    let activeDropdown = null;
-    let loadProgress = 0;
-    let loadInterval;
+  <!-- الأزرار العائمة -->
+  <div class="floating-actions">
+    <button class="floating-btn" id="scroll-top" title="الأعلى"><i class="fas fa-arrow-up"></i></button>
+    <button class="floating-btn" id="read-mode" title="وضع القراءة"><i class="fas fa-book"></i></button>
+  </div>
+  <!-- مودال المقال -->
+  <div class="modal" id="article-modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('article-modal')">&times;</button>
+      <div id="article-body"></div>
+    </div>
+  </div>
 
-    const loadingScreen = document.getElementById('loadingScreen');
-    const progressBar = document.getElementById('loadProgressBar');
-    const loadingTextSpan = document.getElementById('loadingText');
-    const phrases = [
-        "تنشيط الخلايا العصبية...",
-        "توليد الوصلات العصبية...",
-        "بناء شبكة المعرفة...",
-        "جمع الخبرات...",
-        "تهيئة الدماغ الرقمي...",
-        "جاهز للاستكشاف..."
-    ];
-    let phraseIndex = 0;
+  <!-- مودال الإشعارات -->
+  <div class="modal" id="notif-modal">
+    <div class="modal-content modal-small">
+      <div class="modal-header">
+        <h3>🔔 الإشعارات</h3>
+        <button class="modal-close" onclick="closeModal('notif-modal')">&times;</button>
+      </div>
+      <div id="notif-list"></div>
+    </div>
+  </div>
 
-    function startLoading() {
-        loadInterval = setInterval(() => {
-            loadProgress += Math.random() * 12 + 3;
-            if (loadProgress >= 100) loadProgress = 100;
-            progressBar.style.width = loadProgress + '%';
-            
-            const targetIndex = Math.min(Math.floor(loadProgress / 18), phrases.length - 1);
-            if (targetIndex > phraseIndex) {
-                phraseIndex = targetIndex;
-                loadingTextSpan.innerText = phrases[phraseIndex];
-            }
-            
-            if (loadProgress === 100) {
-                clearInterval(loadInterval);
-                setTimeout(hideLoading, 400);
-            }
-        }, 100);
-    }
-
-    function hideLoading() {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
-    }
-
-    async function fetchAll() {
-        if (!db) return;
-        try {
-            const [articlesSnap, catsSnap] = await Promise.all([
-                db.collection('articles').orderBy('date', 'desc').get(),
-                db.collection('categories').orderBy('name').get()
-            ]);
-            
-            allArticles = articlesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            categories = catsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            
-            renderTabs();
-            if (categories.length) {
-                selectCategory(categories[0].name);
-            } else {
-                document.getElementById('articlesGrid').innerHTML = 
-                    '<div class="empty-state">📭 لا توجد تبويبات. أضفها من لوحة الإدارة أولاً.</div>';
-            }
-            updateSidePanels();
-        } catch (e) {
-            console.error("Fetch error:", e);
-            document.getElementById('articlesGrid').innerHTML = 
-                '<div class="empty-state">⚠️ خطأ في جلب البيانات: ' + escapeHtml(e.message) + '</div>';
-        } finally {
-            if (loadProgress < 100) {
-                loadProgress = 100;
-                progressBar.style.width = '100%';
-                setTimeout(hideLoading, 300);
-            }
-        }
-    }
-
-    function renderTabs() {
-        const container = document.getElementById('tabsContainer');
-        container.innerHTML = '';
-        categories.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.textContent = cat.name;
-            btn.className = 'tab-btn' + (cat.name === currentCat ? ' active' : '');
-            btn.onclick = () => selectCategory(cat.name);
-            container.appendChild(btn);
-        });
-    }
-
-    function selectCategory(catName) {
-        currentCat = catName;
-        currentSub = null;
-        
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.textContent === catName));
-        
-        renderSubTabs(catName);
-        filterAndRender();
-        updateSidePanels();
-    }
-
-    function renderSubTabs(catName) {
-        const subDiv = document.getElementById('subContainer');
-        const cat = categories.find(c => c.name === catName);
-        
-        if (!cat || !Array.isArray(cat.subfields) || cat.subfields.length === 0) {
-            subDiv.classList.remove('show');
-            return;
-        }
-        
-        subDiv.classList.add('show');
-        subDiv.innerHTML = '';
-        
-        const allBtn = document.createElement('button');
-        allBtn.textContent = 'الكل';
-        allBtn.className = 'sub-btn active';
-        allBtn.onclick = () => { currentSub = null; refreshSubActive(); filterAndRender(); };
-        subDiv.appendChild(allBtn);
-        
-        cat.subfields.forEach(sub => {
-            const btn = document.createElement('button');
-            btn.textContent = sub;
-            btn.className = 'sub-btn';
-            btn.onclick = () => { currentSub = sub; refreshSubActive(); filterAndRender(); };
-            subDiv.appendChild(btn);
-        });
-    }
-
-    function refreshSubActive() {
-        document.querySelectorAll('.sub-btn').forEach(b => {
-            b.classList.toggle('active', 
-                (currentSub === null && b.textContent === 'الكل') || b.textContent === currentSub
-            );
-        });
-    }
-
-    function filterAndRender() {
-        let filtered = allArticles.filter(a => a.category === currentCat);
-        if (currentSub) filtered = filtered.filter(a => a.subfield === currentSub);
-        renderArticlesGrid(filtered);
-    }
-
-    function getFirstImageUrl(article) {
-        if (!article.contentBlocks || !Array.isArray(article.contentBlocks)) return null;
-        const imgBlock = article.contentBlocks.find(b => b.type === 'image' && b.value && b.value.url);
-        return imgBlock ? imgBlock.value.url : null;
-    }
-
-    function stripHtml(html) {
-        if (!html) return '';
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
-    }
-
-    function getPreviewText(article) {
-        if (article.contentBlocks && Array.isArray(article.contentBlocks)) {
-            const textBlock = article.contentBlocks.find(b => (b.type === 'text' || b.type === 'summary') && b.value);
-            if (textBlock) return stripHtml(textBlock.value).slice(0, 140);
-        }
-        return stripHtml(article.content).slice(0, 140);
-    }
-
-    function renderArticlesGrid(articles) {
-        const grid = document.getElementById('articlesGrid');
-        if (!articles.length) {
-            grid.innerHTML = '<div class="empty-state">📭 لا توجد مقالات في هذا القسم</div>';
-            return;
-        }
-        
-        grid.innerHTML = articles.map(art => {
-            const imgUrl = getFirstImageUrl(art);
-            const preview = getPreviewText(art);
-            const dateStr = art.date ? formatDate(art.date) : 'قديم';
-            
-            return `
-                <div class="article-card" data-id="${escapeHtml(art.id)}">
-                    ${imgUrl 
-                        ? `<img src="${escapeHtml(imgUrl)}" class="article-img" loading="lazy" alt="${escapeHtml(art.title)}" onerror="this.parentElement.querySelector('.article-img-placeholder').style.display='flex'; this.style.display='none'">`
-                        : ''
-                    }
-                    <div class="article-img-placeholder" style="${imgUrl ? 'display:none;' : ''}">
-                        <i class="fas fa-newspaper" style="font-size: 3rem; color: #D4AF37;"></i>
-                    </div>
-                    <div class="article-content">
-                        <div class="article-title" onclick="viewFullArticle('${escapeHtml(art.id)}')">${escapeHtml(art.title)}</div>
-                        <div class="meta">
-                            <span><i class="fas fa-user"></i> ${escapeHtml(art.author || 'غير معروف')}</span>
-                            <span><i class="fas fa-eye"></i> ${art.views || 0}</span>
-                            <span><i class="fas fa-calendar"></i> ${dateStr}</span>
-                        </div>
-                        <div class="article-preview">${escapeHtml(preview)}${preview ? '...' : ''}</div>
-                        <button class="summary-trigger" onclick="showSummary('${escapeHtml(art.id)}')">
-                            <i class="fas fa-lightbulb"></i> زبدة المقال
-                        </button>
-                        <div class="article-actions">
-                            <button class="dots-btn" onclick="toggleMenu(event, '${escapeHtml(art.id)}')">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <div id="drop-${escapeHtml(art.id)}" class="dropdown">
-                                <button onclick="copyLink('${escapeHtml(art.id)}')">
-                                    <i class="fas fa-copy"></i> نسخ الرابط
-                                </button>
-                                <button onclick="shareArticle('${escapeHtml(art.id)}')">
-                                    <i class="fas fa-share-alt"></i> مشاركة
-                                </button>
-                                <button onclick="focusArticle('${escapeHtml(art.id)}')">
-                                    <i class="fas fa-expand"></i> وضع التركيز
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function formatDate(dateField) {
-        try {
-            let date;
-            if (dateField && typeof dateField.toDate === 'function') {
-                date = dateField.toDate();
-            } else if (dateField instanceof Date) {
-                date = dateField;
-            } else if (typeof dateField === 'string') {
-                date = new Date(dateField);
-            } else {
-                return 'غير محدد';
-            }
-            return date.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
-        } catch (e) {
-            return 'غير محدد';
-        }
-    }
-
-    window.viewFullArticle = async function(id) {
-        const art = allArticles.find(a => a.id === id);
-        if (!art) return;
-        
-        if (db) {
-            try {
-                await db.collection('articles').doc(id).update({ 
-                    views: firebase.firestore.FieldValue.increment(1) 
-                });
-                art.views = (art.views || 0) + 1;
-            } catch (e) {
-                console.warn("View increment failed:", e);
-            }
-        }
-        
-        let fullHtml = '';
-        if (art.contentBlocks && Array.isArray(art.contentBlocks)) {
-            fullHtml = art.contentBlocks.map(block => renderBlock(block)).join('');
-        } else {
-            fullHtml = `<div class="article-body">${art.content || ''}</div>`;
-        }
-        
-        document.getElementById('articlesGrid').innerHTML = `
-            <div class="full-article-container">
-                <div class="article-card full-article">
-                    <div class="article-title">${escapeHtml(art.title)}</div>
-                    <div class="meta">
-                        <span><i class="fas fa-user"></i> ${escapeHtml(art.author || 'غير معروف')}</span>
-                        <span><i class="fas fa-eye"></i> ${art.views || 0}</span>
-                        <span><i class="fas fa-calendar"></i> ${formatDate(art.date)}</span>
-                    </div>
-                    <div class="article-body">${fullHtml}</div>
-                    <button class="back-btn" onclick="restoreGrid()">
-                        <i class="fas fa-arrow-right"></i> العودة للمقالات
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.querySelectorAll('pre code').forEach(block => {
-            if (window.hljs) hljs.highlightElement(block);
-        });
-        attachCopyButtons();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    function renderBlock(block) {
-        if (!block || !block.type) return '';
-        
-        switch (block.type) {
-            case 'text':
-                return `<div class="article-body">${block.value || ''}</div>`;
-            case 'image':
-                if (!block.value || !block.value.url) return '';
-                return `
-                    <div class="image-block">
-                        <img src="${escapeHtml(block.value.url)}" alt="${escapeHtml(block.value.caption || '')}" loading="lazy">
-                        ${block.value.caption ? `<div class="caption">${escapeHtml(block.value.caption)}</div>` : ''}
-                    </div>
-                `;
-            case 'code':
-                if (!block.value) return '';
-                return `
-                    <pre><code class="language-${escapeHtml(block.value.language || 'javascript')}">${escapeHtml(block.value.code || '')}</code></pre>
-                `;
-            case 'summary':
-                return `<div class="summary-box">✨ ${block.value || ''}</div>`;
-            default:
-                return '';
-        }
-    }
-
-    function restoreGrid() {
-        filterAndRender();
-        updateSidePanels();
-    }
-
-    function attachCopyButtons() {
-        document.querySelectorAll('pre').forEach(pre => {
-            if (pre.querySelector('.copy-code')) return;
-            const btn = document.createElement('button');
-            btn.innerHTML = '<i class="fas fa-copy"></i> نسخ';
-            btn.className = 'copy-code';
-            btn.onclick = () => {
-                const code = pre.querySelector('code');
-                if (code) {
-                    navigator.clipboard.writeText(code.innerText).then(() => {
-                        btn.innerHTML = '<i class="fas fa-check"></i> تم!';
-                        setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> نسخ', 2000);
-                    });
-                }
-            };
-            pre.appendChild(btn);
-        });
-    }
-
-    window.showSummary = function(id) {
-        const art = allArticles.find(a => a.id === id);
-        if (!art) return;
-        
-        let sum = '';
-        if (art.contentBlocks && Array.isArray(art.contentBlocks)) {
-            const sBlock = art.contentBlocks.find(b => b.type === 'summary');
-            sum = sBlock ? sBlock.value : '';
-            if (!sum) {
-                const firstText = art.contentBlocks.find(b => b.type === 'text');
-                sum = firstText ? stripHtml(firstText.value).slice(0, 400) : '';
-            }
-        } else {
-            sum = stripHtml(art.content).slice(0, 400);
-        }
-        
-        document.getElementById('summaryContent').innerHTML = `
-            <div style="line-height:1.8; color:#ddd;">${sum || 'لا يوجد ملخص'}</div>
-            <p style="margin-top:1rem; color:#888; font-size:0.9rem;">
-                <i class="fas fa-info-circle"></i> ملخص سريع. اضغط على العنوان للقراءة الكاملة.
-            </p>
-        `;
-        openModal('summaryModal');
-    };
-
-    window.copyLink = function(id) {
-        const url = `${window.location.origin}${window.location.pathname}?article=${id}`;
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('✅ تم نسخ الرابط');
-        }).catch(() => {
-            const textarea = document.createElement('textarea');
-            textarea.value = url;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            showToast('✅ تم نسخ الرابط');
-        });
-        closeDropdown();
-    };
-
-    window.shareArticle = function(id) {
-        const art = allArticles.find(a => a.id === id);
-        if (!art) return;
-        
-        if (navigator.share) {
-            navigator.share({ 
-                title: art.title, 
-                text: stripHtml(getPreviewText(art)),
-                url: `${window.location.origin}${window.location.pathname}?article=${id}`
-            }).catch(() => {});
-        } else {
-            copyLink(id);
-        }
-        closeDropdown();
-    };
-
-    window.focusArticle = function(id) {
-        const card = document.querySelector(`.article-card[data-id="${id}"]`);
-        if (!card) return;
-        
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:25000; display:flex; align-items:center; justify-content:center; padding:2rem;';
-        
-        const clone = card.cloneNode(true);
-        clone.style.cssText = 'position:relative; width:100%; max-width:800px; max-height:85vh; overflow:auto; transform:none; margin:0;';
-        clone.querySelector('.article-actions').style.display = 'none';
-        
-        overlay.appendChild(clone);
-        document.body.appendChild(overlay);
-        
-        overlay.onclick = (e) => {
-            if (e.target === overlay) overlay.remove();
-        };
-        
-        closeDropdown();
-    };
-
-    window.toggleMenu = function(e, id) {
-        e.stopPropagation();
-        const menu = document.getElementById(`drop-${id}`);
-        if (!menu) return;
-        
-        if (activeDropdown && activeDropdown !== menu) {
-            activeDropdown.classList.remove('show');
-        }
-        menu.classList.toggle('show');
-        activeDropdown = menu.classList.contains('show') ? menu : null;
-    };
-
-    function closeDropdown() {
-        if (activeDropdown) {
-            activeDropdown.classList.remove('show');
-            activeDropdown = null;
-        }
-    }
-    document.addEventListener('click', closeDropdown);
-
-    function updateSidePanels() {
-        const latest = [...allArticles].sort((a, b) => {
-            const aTime = getTimestamp(a.date);
-            const bTime = getTimestamp(b.date);
-            return bTime - aTime;
-        }).slice(0, 5);
-        
-        const most = [...allArticles].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
-        
-        let related = currentCat 
-            ? allArticles.filter(a => a.category === currentCat).slice(0, 5)
-            : allArticles.slice(0, 5);
-        
-        document.getElementById('latestList').innerHTML = latest.map(a => `
-            <li onclick="viewFullArticle('${escapeHtml(a.id)}')">
-                ${escapeHtml(a.title)}
-                <span class="view-count">${formatDate(a.date)}</span>
-            </li>
-        `).join('');
-        
-        document.getElementById('mostViewedList').innerHTML = most.map(a => `
-            <li onclick="viewFullArticle('${escapeHtml(a.id)}')">
-                ${escapeHtml(a.title)}
-                <span class="view-count">${a.views || 0} <i class="fas fa-eye" style="font-size:0.7rem;"></i></span>
-            </li>
-        `).join('');
-        
-        document.getElementById('relatedList').innerHTML = related.map(a => `
-            <li onclick="viewFullArticle('${escapeHtml(a.id)}')">${escapeHtml(a.title)}</li>
-        `).join('');
-    }
-
-    function getTimestamp(dateField) {
-        try {
-            if (dateField && typeof dateField.toDate === 'function') return dateField.toDate().getTime();
-            if (dateField instanceof Date) return dateField.getTime();
-            if (typeof dateField === 'string') return new Date(dateField).getTime();
-            return 0;
-        } catch (e) { return 0; }
-    }
-
-    function performSearch() {
-        const q = document.getElementById('searchInput').value.toLowerCase().trim();
-        const div = document.getElementById('searchResults');
-        
-        if (!q) {
-            div.innerHTML = '';
-            return;
-        }
-        
-        const res = allArticles.filter(a => 
-            (a.title && a.title.toLowerCase().includes(q)) ||
-            (a.author && a.author.toLowerCase().includes(q)) ||
-            (a.category && a.category.toLowerCase().includes(q)) ||
-            (a.content && a.content.toLowerCase().includes(q))
-        );
-        
-        if (!res.length) {
-            div.innerHTML = '<div class="empty-state" style="padding:1rem;">🔍 لا توجد نتائج</div>';
-        } else {
-            div.innerHTML = res.map(a => `
-                <div class="search-result-item" onclick="viewFullArticle('${escapeHtml(a.id)}'); closeModal('searchModal');">
-                    <strong>${escapeHtml(a.title)}</strong>
-                    <div style="font-size:0.8rem; color:#888; margin-top:0.3rem;">
-                        ${escapeHtml(a.author || '')} | ${escapeHtml(a.category || '')}
-                    </div>
-                </div>
-            `).join('');
-        }
-    }
-
-    document.getElementById('searchInput')?.addEventListener('input', debounce(performSearch, 300));
-
-    function debounce(fn, ms) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => fn.apply(this, args), ms);
-        };
-    }
-
-    document.getElementById('doSubscribeBtn')?.addEventListener('click', () => {
-        const email = document.getElementById('subEmail').value.trim();
-        const msgDiv = document.getElementById('subMsg');
-        
-        if (!email || !email.includes('@') || !email.includes('.')) {
-            msgDiv.innerHTML = '<p style="color:#ff7777;">❌ بريد إلكتروني غير صالح</p>';
-            return;
-        }
-        
-        if (db) {
-            db.collection('subscribers').add({
-                email: email,
-                date: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                msgDiv.innerHTML = '<p style="color:#4caf50;">✅ تم الاشتراك بنجاح!</p>';
-                document.getElementById('subEmail').value = '';
-                setTimeout(() => closeModal('subscribeModal'), 2000);
-            }).catch(e => {
-                msgDiv.innerHTML = '<p style="color:#ff7777;">❌ خطأ: ' + escapeHtml(e.message) + '</p>';
-            });
-        } else {
-            msgDiv.innerHTML = '<p style="color:#4caf50;">✅ تم الاشتراك!</p>';
-        }
+  <script src="js/app.js"></script>
+  <script>
+    // ======================= تهيئة الصفحة =======================
+    document.addEventListener('DOMContentLoaded', () => {
+      initBreakingNews();
+      renderHero();
+      renderNewsGrid();
+      renderSidebar();
+      initScrollFeatures();
+      initTripleClickAdmin(); // ✨ ميزة الثلاث نقرات
+      
+      // تحديث الساعة
+      setInterval(() => {
+        const clock = document.getElementById('clock');
+        if (clock) clock.textContent = new Date().toLocaleTimeString('ar-SA');
+      }, 1000);
     });
 
-    function openModal(id) {
-        document.getElementById(id)?.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-
-    window.closeModal = function(id) {
-        if (id) {
-            document.getElementById(id)?.classList.remove('show');
-        } else {
-            document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
-        }
-        document.body.style.overflow = '';
-    };
-
-    document.getElementById('openSearchBtn').onclick = () => {
-        openModal('searchModal');
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchResults').innerHTML = '';
-        setTimeout(() => document.getElementById('searchInput').focus(), 100);
-    };
-
-    document.getElementById('openSubscribeBtn').onclick = () => {
-        openModal('subscribeModal');
-        document.getElementById('subEmail').value = '';
-        document.getElementById('subMsg').innerHTML = '';
-    };
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal(modal.id);
-        });
-    });
-
-    window.openStaticPage = function(page) {
-        const titles = { 
-            about: 'من نحن', 
-            privacy: 'الخصوصية', 
-            cookies: 'سياسة الكوكيز', 
-            terms: 'شروط الاستخدام' 
-        };
-        const contents = {
-            about: `
-                <p style="line-height:1.8; color:#ddd;">
-                    أوج هي منصة معرفية سيادية تقدم محتوى استراتيجياً وفلسفياً وعلمياً. 
-                    نهدف إلى تمكين العقول بالنخبة الفكرية.
-                </p>
-                <p style="line-height:1.8; color:#ddd; margin-top:1rem;">
-                    تأسست المنصة لتكون ملتقى للمفكرين والباحثين في مجالات الذكاء الاستراتيجي والأمن الرقمي والفلسفة.
-                </p>
-            `,
-            privacy: `
-                <p style="line-height:1.8; color:#ddd;">
-                    نحن لا نشارك بياناتك مع أي طرف ثالث. جميع البيانات مخزنة بأمان على خوادم Firebase. 
-                    يمكنك طلب حذف بياناتك في أي وقت.
-                </p>
-            `,
-            cookies: `
-                <p style="line-height:1.8; color:#ddd;">
-                    نستخدم التخزين المحلي (localStorage) لتحسين تجربتك. 
-                    لا نستخدم كوكيز خارجية ولا نتتبعك.
-                </p>
-            `,
-            terms: `
-                <p style="line-height:1.8; color:#ddd;">
-                    المحتوى محمي بحقوق النشر. يمنع النسخ أو إعادة النشر دون إذن خطي. 
-                    استخدام الموقع يعني موافقتك على هذه الشروط.
-                </p>
-            `
-        };
-        
-        document.getElementById('staticTitle').innerText = titles[page] || '';
-        document.getElementById('staticBody').innerHTML = contents[page] || '';
-        openModal('staticModal');
-    };
-
-    const scrollBtn = document.getElementById('scrollTopBtn');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 400) scrollBtn.classList.add('visible');
-        else scrollBtn.classList.remove('visible');
-    });
-    scrollBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    let vaultClicks = 0;
-    document.getElementById('vaultTrigger').onclick = () => {
-        vaultClicks++;
-        setTimeout(() => vaultClicks = 0, 2000);
-        
-        if (vaultClicks === 3) {
-            const pwd = prompt("أدخل شفرة العبور:");
-            if (pwd === "@...Alshanfricc_1998...@") {
-                document.getElementById('vaultContent').innerHTML = `
-                    <div style="text-align:center;">
-                        <h3 style="color:var(--gold); margin-bottom:1rem;">🔓 مرحباً سيد أوج</h3>
-                        <p>📚 عدد المقالات: <strong>${allArticles.length}</strong></p>
-                        <p>🏷️ التصنيفات: <strong>${categories.map(c => c.name).join(', ')}</strong></p>
-                        <p>🕰️ آخر تحديث: <strong>${new Date().toLocaleString('ar-EG')}</strong></p>
-                        <p style="margin-top:1rem; color:#888;">إجمالي المشاهدات: ${allArticles.reduce((s, a) => s + (a.views || 0), 0)}</p>
-                    </div>
-                `;
-                openModal('vaultModal');
-            } else if (pwd !== null) {
-                showToast('❌ شفرة خاطئة');
-            }
-            vaultClicks = 0;
-        }
-    };
-
-    function showToast(message) {
-        const existing = document.querySelector('.toast-notification');
-        if (existing) existing.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.style.cssText = `
-            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-            background: #1e1e2a; color: var(--gold); padding: 0.8rem 1.5rem;
-            border-radius: 40px; border: 1px solid var(--gold); z-index: 30000;
-            font-size: 0.9rem; animation: fadeInUp 0.3s ease;
-        `;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        
+    // ======================= ✨ ميزة الثلاث نقرات لفتح الأدمن =======================
+    function initTripleClickAdmin() {
+      const trigger = document.getElementById('admin-trigger');
+      if (!trigger) return;
+      
+      let clicks = 0;
+      let timer = null;
+      
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        clicks++;
+                // تأثير بصري عند النقر
+        trigger.style.transform = 'scale(1.2)';
+        trigger.style.color = 'var(--accent)';
         setTimeout(() => {
-            toast.style.animation = 'fadeOut 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        }, 2500);
-    }
-
-    function checkUrlParams() {
-        const params = new URLSearchParams(window.location.search);
-        const articleId = params.get('article');
-        if (articleId && allArticles.length) {
-            const art = allArticles.find(a => a.id === articleId);
-            if (art) {
-                setTimeout(() => viewFullArticle(articleId), 500);
-            }
+          trigger.style.transform = '';
+          trigger.style.color = '';
+        }, 150);
+        
+        // عد النقرات خلال 600 مللي ثانية
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          if (clicks >= 3) {
+            // تم تحقيق الثلاث نقرات!
+            showToast('🔐 جاري فتح لوحة التحكم...', 'info');
+            
+            // التحقق البسيط (في الإنتاج: استخدم مصادقة حقيقية)
+            setTimeout(() => {
+              const password = prompt('🔑 أدخل كلمة مرور الإدارة:');
+              // كلمة المرور الافتراضية للتجربة
+              if (password === '@...C772809978_1998...@' || password === 'admin123') {
+                showToast('✅ مرحباً بك في لوحة التحكم', 'success');
+                setTimeout(() => {
+                  window.location.href = 'admin-working.html';
+                }, 800);
+              } else if (password !== null) {
+                showToast('❌ كلمة المرور غير صحيحة', 'error');
+                clicks = 0;
+              }
+            }, 600);
+          }
+          clicks = 0;
+        }, 600);
+      });
+      
+      // إضافة تلميح عند التحويم (يختفي بعد أول استخدام)
+      trigger.addEventListener('mouseenter', function() {
+        if (!localStorage.getItem('admin_hint_shown')) {
+          showToast('💡Hint: Triple click "2026" for admin', 'info', 3000);
+          localStorage.setItem('admin_hint_shown', 'true');
         }
+      });
     }
 
-    function escapeHtml(str) {
-        if (str === null || str === undefined) return '';
-        return String(str).replace(/[&<<>"']/g, m => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-        })[m]);
+    // ======================= دوال المحتوى (مبسطة) =======================
+    
+    // بيانات تجريبية
+    const sampleArticles = [
+      {
+        id: '1',
+        title: 'قمة الخليج تعقد في الرياض اليوم',        summary: 'تستضيف المملكة العربية السعودية قمة خليجية مهمة لمناقشة التعاون الاقتصادي والأمني بين دول المجلس.',
+        content: '<p>تستضيف المملكة العربية السعودية اليوم قمة خليجية مهمة في الرياض، بمشاركة قادة دول مجلس التعاون الخليجي.</p><p>وتناقش القمة ملفات التعاون الاقتصادي والأمني، بالإضافة إلى مستجدات المنطقة.</p>',
+        image: 'https://picsum.photos/id/10/800/400',
+        author: 'الإدارة',
+        category: 'سياسة',
+        date: new Date().toISOString(),
+        views: 1250,
+        breaking: true
+      },
+      {
+        id: '2',
+        title: 'ارتفاع مؤشرات الأسواق بنسبة 2%',
+        summary: 'شهدت الأسواق المالية ارتفاعاً ملحوظاً مدفوعة بتحسن أسعار الطاقة وتدفق الاستثمارات.',
+        content: '<p>شهدت الأسواق المالية المحلية والإقليمية ارتفاعاً ملحوظاً في جلسة اليوم.</p><p>وجاء الارتفاع مدفوعاً بتحسن أسعار الطاقة وتدفق الاستثمارات الأجنبية.</p>',
+        image: 'https://picsum.photos/id/20/800/400',
+        author: 'محمد أحمد',
+        category: 'اقتصاد',
+        date: new Date(Date.now() - 3600000).toISOString(),
+        views: 890,
+        breaking: false
+      },
+      {
+        id: '3',
+        title: 'إنجاز رياضي جديد للمنتخب',
+        summary: 'حقق المنتخب الوطني إنجازاً تاريخياً بالفوز على منافسه القوي في مباراة مثيرة.',
+        content: '<p>حقق المنتخب الوطني إنجازاً تاريخياً مساء أمس بالفوز على منافسه القوي بنتيجة 3-1.</p><p>وجاء الفوز تتويجاً لأداء مميز من اللاعبين تحت قيادة المدرب الوطني.</p>',
+        image: 'https://picsum.photos/id/30/800/400',
+        author: 'سارة خالد',
+        category: 'رياضة',
+        date: new Date(Date.now() - 7200000).toISOString(),
+        views: 2100,
+        breaking: false
+      }
+    ];
+
+    function renderHero() {
+      const container = document.getElementById('hero-section');
+      const main = sampleArticles[0];
+      const side = sampleArticles.slice(1, 3);
+      
+      container.innerHTML = `
+        <article class="card hero-card" onclick="viewArticle('${main.id}')">
+          <img src="${main.image}" class="card-img" loading="lazy">
+          <div class="card-body">
+            ${main.breaking ? '<span class="card-tag breaking">⚡ عاجل</span>' : ''}
+            <h2 class="card-title">${main.title}</h2>
+            <div class="card-meta">
+              <span><i class="fas fa-user"></i> ${main.author}</span>
+              <span><i class="fas fa-clock"></i> ${formatRelative(main.date)}</span>
+            </div>            <p class="card-excerpt">${main.summary}</p>
+          </div>
+        </article>
+        <div class="hero-side">
+          ${side.map(a => `
+            <article class="card side-card" onclick="viewArticle('${a.id}')">
+              <img src="${a.image}" class="card-img">
+              <div class="card-body">
+                <h4 class="card-title">${a.title}</h4>
+                <small><i class="fas fa-user"></i> ${a.author} • ${formatRelative(a.date)}</small>
+              </div>
+            </article>
+          `).join('')}
+        </div>
+      `;
     }
 
-    startLoading();
-    fetchAll().then(() => {
-        checkUrlParams();
+    function renderNewsGrid() {
+      const container = document.getElementById('news-grid');
+      container.innerHTML = sampleArticles.map(a => `
+        <article class="card" onclick="viewArticle('${a.id}')">
+          <img src="${a.image}" class="card-img" loading="lazy">
+          <div class="card-body">
+            ${a.breaking ? '<span class="card-tag breaking">⚡ عاجل</span>' : ''}
+            <h3 class="card-title">${a.title}</h3>
+            <div class="card-meta">
+              <span><i class="fas fa-user"></i> ${a.author}</span>
+              <span><i class="fas fa-eye"></i> ${a.views}</span>
+              <span><i class="fas fa-clock"></i> ${formatRelative(a.date)}</span>
+            </div>
+            <p class="card-excerpt">${a.summary}</p>
+            <div class="card-actions">
+              <button onclick="event.stopPropagation(); shareArticle('${a.id}')"><i class="fas fa-share"></i></button>
+              <button onclick="event.stopPropagation(); showSummary('${a.id}')"><i class="fas fa-lightbulb"></i></button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderSidebar() {
+      const topList = document.getElementById('top-list');
+      const sorted = [...sampleArticles].sort((a,b) => b.views - a.views);
+      
+      topList.innerHTML = sorted.map(a => `
+        <li onclick="viewArticle('${a.id}')">
+          <span>${a.title}</span>
+          <span class="views">${a.views}</span>
+        </li>
+      `).join('');    }
+
+    function viewArticle(id) {
+      const article = sampleArticles.find(a => a.id === id);
+      if (!article) return;
+      
+      document.getElementById('article-body').innerHTML = `
+        <h1>${article.title}</h1>
+        <div class="article-meta">
+          <span><i class="fas fa-user"></i> ${article.author}</span>
+          <span><i class="fas fa-clock"></i> ${formatDate(article.date)}</span>
+          <span><i class="fas fa-eye"></i> ${article.views}</span>
+        </div>
+        <img src="${article.image}" class="article-img">
+        <div class="article-content">${article.content}</div>
+        <div class="article-actions">
+          <button onclick="copyArticleLink('${article.id}')"><i class="fas fa-copy"></i> نسخ الرابط</button>
+          <button onclick="shareArticle('${article.id}')"><i class="fas fa-share"></i> مشاركة</button>
+        </div>
+      `;
+      
+      document.getElementById('article-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showSummary(id) {
+      const article = sampleArticles.find(a => a.id === id);
+      if (article) {
+        alert(`📋 ملخص "${article.title}":\n\n${article.summary}`);
+      }
+    }
+
+    function shareArticle(id) {
+      const url = `${window.location.origin}?article=${id}`;
+      if (navigator.share) {
+        navigator.share({ title: sampleArticles.find(a=>a.id===id)?.title, url });
+      } else {
+        navigator.clipboard.writeText(url);
+        showToast('✅ تم نسخ الرابط للمشاركة');
+      }
+    }
+
+    function copyArticleLink(id) {
+      const url = `${window.location.origin}?article=${id}`;
+      navigator.clipboard.writeText(url);
+      showToast('✅ تم نسخ الرابط');
+    }
+
+    function subscribeNewsletter() {
+      const email = document.getElementById('newsletter-email')?.value.trim();      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('✅ شكرًا لاشتراكك في نشرتنا!', 'success');
+        document.getElementById('newsletter-email').value = '';
+      } else {
+        showToast('⚠️ يرجى إدخال بريد صحيح', 'warning');
+      }
+    }
+
+    function initBreakingNews() {
+      const breaking = [
+        'عاجل: قمة الخليج تعقد في الرياض اليوم',
+        'تحديث: مؤشرات الأسهم ترتفع بنسبة 2%',
+        'عاجل: إطلاق منصة رقمية جديدة للخدمات'
+      ];
+      const slider = document.getElementById('breaking-slider');
+      slider.innerHTML = [...breaking, ...breaking].map(n => 
+        `<span class="breaking-item">• ${n}</span>`
+      ).join('');
+    }
+
+    function initScrollFeatures() {
+      // زر العودة للأعلى
+      document.getElementById('scroll-top').onclick = () => 
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // زر وضع القراءة
+      document.getElementById('read-mode').onclick = () => {
+        document.body.classList.toggle('read-mode');
+        showToast(document.body.classList.contains('read-mode') ? '📖 وضع القراءة مفعل' : '🔙 تم الخروج من وضع القراءة');
+      };
+      
+      // شريط التقدم
+      window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const bar = document.getElementById('read-progress');
+        if (bar) bar.style.width = scrolled + '%';
+      }, { passive: true });
+    }
+
+    // ======================= دوال مساعدة =======================
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString('ar-SA', { 
+        year: 'numeric', month: 'long', day: 'numeric' 
+      });
+    }
+
+    function formatRelative(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'الآن';
+      if (mins < 60) return `منذ ${mins} دقيقة`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `منذ ${hrs} ساعة`;
+      const days = Math.floor(hrs / 24);
+      return days < 7 ? `منذ ${days} يوم` : formatDate(dateStr);
+    }
+
+    function showToast(msg, type = 'success', duration = 4000) {
+      const container = document.getElementById('toast-container') || (() => {
+        const c = document.createElement('div');
+        c.id = 'toast-container';
+        c.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px';
+        document.body.appendChild(c);
+        return c;
+      })();
+      
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.style.cssText = `padding:12px 18px;border-radius:8px;background:#fff;color:#111;box-shadow:0 4px 12px rgba(0,0,0,0.15);border-right:4px solid ${type==='success'?'#10b981':type==='error'?'#ef4444':'#f59e0b'};animation:slideIn 0.3s`;
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), duration);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // إغلاق المودال عند النقر خارجه
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal(modal.id);
+      };
     });
-</script>
+  </script>
 </body>
 </html>

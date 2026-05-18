@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALSHANFRICC | تسجيل الدخول</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      padding: 20px;
+    }
+    .login-card {
+      background: var(--surface);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 420px;
+      border: 1px solid var(--border);
+    }
+    .login-card h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+    }
+    .login-card .logo {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);      border-radius: var(--radius);
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+    }
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 10px;
+    }
+    .btn-login:hover { background: var(--secondary); }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+    .login-msg {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      min-height: 24px;
+    }
+    .login-msg.success { color: var(--success); }
+    .login-msg.error { color: var(--danger); }
+    .verify-section {
+      display: none;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .verify-section input {
+      text-align: center;
+      font-size: 1.3rem;
+      letter-spacing: 8px;
+      padding: 10px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--primary);
+      text-decoration: none;    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="logo">ALSHANFRICC</div>
+      <h2>👑 دخول الإدارة</h2>
+      
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">البريد الإلكتروني</label>
+          <input type="email" id="login-email" placeholder="admin@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="login-pass">كلمة المرور</label>
+          <input type="password" id="login-pass" placeholder="••••••••" required>
+        </div>
+        <input type="hidden" name="_verify_human" value="">
+        <button type="submit" class="btn-login" id="login-btn">تسجيل الدخول →</button>
+      </form>
+      
+      <div id="verify-section" class="verify-section">
+        <p style="color:var(--text-muted);margin-bottom:12px;text-align:center">
+          📧 تم إرسال رمز التحقق إلى بريدك
+        </p>
+        <input type="text" id="verify-code" placeholder="••••••" maxlength="6" 
+               style="width:100%;margin-bottom:12px" inputmode="numeric">
+        <button class="btn-login" id="verify-btn" style="background:var(--success)">تحقق ✅</button>
+      </div>
+      
+      <div id="login-msg" class="login-msg"></div>
+      <a href="index.html" class="back-link">← العودة للموقع</a>
+    </div>
+  </div>
+
+  <script>
+    // بيانات الدخول (للتجربة فقط - في الإنتاج استخدم مصادقة حقيقية)
+    const ADMIN_CREDENTIALS = {
+      email: 'clezplook1998@gmail.com',
+      password: '@...C772809978_1998...@',
+      deviceKey: null
+    };
+
+    const form = document.getElementById('login-form');
+    const verifySection = document.getElementById('verify-section');
+    const msg = document.getElementById('login-msg');
+    const loginBtn = document.getElementById('login-btn');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-pass').value;
+      
+      loginBtn.disabled = true;
+      loginBtn.textContent = '🔄 جاري التحقق...';
+      msg.textContent = '';
+      
+      // محاكاة تحقق الخادم
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+        // التحقق من توثيق الجهاز (لأول مرة)
+        if (!ADMIN_CREDENTIALS.deviceKey) {
+          // إرسال رمز تحقق (محاكاة)
+          const code = Math.floor(100000 + Math.random() * 900000);
+          console.log(`📧 رمز التحقق: ${code}`);
+          sessionStorage.setItem('af_verify_code', code);
+          
+          form.style.display = 'none';
+          verifySection.style.display = 'block';
+          msg.textContent = '📧 أدخل الرمز المرسل لبريدك';
+          msg.className = 'login-msg success';
+        } else {
+          // دخول مباشر
+          completeLogin();
+        }
+      } else {
+        msg.textContent = '❌ بيانات الدخول غير صحيحة';
+        msg.className = 'login-msg error';
+      }
+      
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'تسجيل الدخول →';
+    });
+
+    document.getElementById('verify-btn').addEventListener('click', async () => {
+      const code = document.getElementById('verify-code').value.trim();
+      const stored = sessionStorage.getItem('af_verify_code');
+      
+      if (code === stored) {
+        // توثيق ناجح - حفظ مفتاح الجهاز
+        ADMIN_CREDENTIALS.deviceKey = crypto.randomUUID();
+        localStorage.setItem('af_device_key', ADMIN_CREDENTIALS.deviceKey);
+        sessionStorage.removeItem('af_verify_code');
+        
+        msg.textContent = '✅ تم توثيق الجهاز بنجاح';
+        msg.className = 'login-msg success';        
+        setTimeout(completeLogin, 1000);
+      } else {
+        msg.textContent = '❌ رمز التحقق غير صحيح';
+        msg.className = 'login-msg error';
+      }
+    });
+
+    function completeLogin() {
+      // حفظ الجلسة
+      const session = {
+        token: crypto.randomUUID(),
+        user: { email: ADMIN_CREDENTIALS.email, role: 'admin' },
+        expiry: Date.now() + 3600000 // ساعة واحدة
+      };
+      localStorage.setItem('af_session', JSON.stringify(session));
+      
+      msg.textContent = '✅ جاري التوجيه للوحة التحكم...';
+      msg.className = 'login-msg success';
+      
+      setTimeout(() => {
+        window.location.href = 'admin-working.html';
+      }, 1200);
+    }
+
+    // التحقق من جلسة موجودة
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        const session = JSON.parse(localStorage.getItem('af_session'));
+        if (session && Date.now() < session.expiry) {
+          window.location.href = 'admin-working.html';
+        }
+      } catch {}
+    });
+  </script>
+</body>
+</html>

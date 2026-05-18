@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم</title>
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="login-screen" class="screen">
+        <form id="login-form">
+            <h2>تسجيل الدخول للوحة التحكم</h2>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <input type="password" id="password" placeholder="كلمة السر" required>
+            <button type="submit">دخول</button>
+        </form>
+    </div>
+
+    <div id="admin-screen" class="screen" style="display:none">
+        <nav id="sidebar">
+            <ul>
+                <li data-section="header">إدارة الهيدر</li>
+                <li data-section="body">إدارة البدي</li>
+                <li data-section="footer">إدارة الذيل</li>
+                <li data-section="posts">المنشورات</li>
+                <li data-section="categories">التبويبات (الفئات)</li>
+                <li data-section="links">الروابط الخارجية</li>
+            </ul>
+        </nav>
+        <main id="content-panel">
+            <!-- سيتم تحميل النماذج هنا -->
+        </main>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/admin.js"></script>
+</body>
+</html> 

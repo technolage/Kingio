@@ -6,7 +6,6 @@
     <title>ALSHANFRICC</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <style>
-        /* ========== أساسيات ========== */
         :root { --primary: #c48b4c; --primary-dark: #a6733a; --bg: #f0f2f5; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -17,267 +16,200 @@
         }
         a { text-decoration: none; color: inherit; }
 
-        /* ========== الشريط العلوي الثابت ========== */
+        /* شريط علوي */
         .topbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 60px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
+            position: fixed; top: 0; left: 0; right: 0; height: 60px;
+            background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; z-index: 1000;
         }
         .topbar .logo {
             font-family: 'Playfair Display', 'Cairo', serif;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary);
-            letter-spacing: 1px;
+            font-size: 1.8rem; font-weight: bold; color: var(--primary);
         }
         .search-box {
-            background: #f0f2f5;
-            border-radius: 25px;
-            padding: 8px 16px;
-            width: 280px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #65676b;
+            background: #f0f2f5; border-radius: 25px; padding: 8px 16px;
+            width: 280px; display: flex; align-items: center; gap: 8px; color: #65676b;
         }
-        .search-box input {
-            border: none;
-            background: transparent;
-            outline: none;
-            font-family: inherit;
-            width: 100%;
-        }
+        .search-box input { border: none; background: transparent; outline: none; font-family: inherit; width: 100%; }
         .admin-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            width: 40px; height: 40px; border-radius: 50%; background: var(--primary);
+            color: white; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
         }
         .admin-icon:hover { background: var(--primary-dark); }
 
-        /* ========== الغلاف ========== */
+        /* غلاف */
         .cover {
-            margin-top: 60px; /* مسافة تحت الشريط العلوي */
-            height: 300px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 0 0 12px 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: background-image 2s ease-in-out;
+            margin-top: 60px; height: 280px; background-size: cover;
+            background-position: center; border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: background-image 2s ease-in-out;
         }
 
-        /* ========== التخطيط العام (فيسبوك) ========== */
+        /* تخطيط ثلاثي الأعمدة */
         .main-layout {
-            display: flex;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-            gap: 20px;
+            display: flex; max-width: 1200px; margin: 20px auto; padding: 0 20px; gap: 20px;
         }
         .left-sidebar {
-            flex: 0 0 220px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            height: fit-content;
-            position: sticky;
-            top: 80px;
+            flex: 0 0 220px; background: white; border-radius: 12px;
+            padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            height: fit-content; position: sticky; top: 80px;
         }
-        .left-sidebar h4 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-        }
+        .left-sidebar h4, .right-sidebar h4 { color: var(--primary); margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
         .left-sidebar ul { list-style: none; }
-        .left-sidebar li { padding: 10px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer; }
+        .left-sidebar li { padding: 10px 0; border-bottom: 1px solid #f5f5f5; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .left-sidebar li:hover { color: var(--primary); }
-        .feed {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .feed { flex: 1; display: flex; flex-direction: column; gap: 20px; }
         .right-sidebar {
-            flex: 0 0 250px;
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            height: fit-content;
-            position: sticky;
-            top: 80px;
+            flex: 0 0 250px; background: white; border-radius: 12px;
+            padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            height: fit-content; position: sticky; top: 80px;
         }
 
-        /* ========== كروت المنشورات (البطاقات) ========== */
+        /* بطاقة منشور فيسبوكية */
         .post-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            overflow: hidden;
+            background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            overflow: visible; position: relative;
         }
         .post-header {
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 16px; display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid #f0f0f0; position: relative;
         }
         .post-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            width: 48px; height: 48px; border-radius: 50%; background: var(--primary);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold; flex-shrink: 0;
         }
-        .post-info h5 { color: #1c1e21; }
-        .post-info small { color: #65676b; }
+        .post-info { flex: 1; }
+        .post-info h5 { color: #1c1e21; font-size: 1.1rem; }
+        .post-meta { display: flex; align-items: center; gap: 10px; color: #65676b; font-size: 0.85rem; }
+        .post-meta .time { cursor: default; }
+        .dropdown-btn {
+            width: 36px; height: 36px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; cursor: pointer;
+            transition: 0.2s; background: transparent; border: none; font-size: 1.2rem;
+        }
+        .dropdown-btn:hover { background: #f0f2f5; }
+        .dropdown-menu {
+            display: none; position: absolute; top: 45px; left: 10px;
+            background: white; border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            min-width: 200px; z-index: 10; padding: 8px 0;
+        }
+        .dropdown-menu.active { display: block; }
+        .dropdown-item {
+            padding: 10px 16px; cursor: pointer; white-space: nowrap;
+            display: flex; align-items: center; gap: 8px; transition: 0.2s;
+        }
+        .dropdown-item:hover { background: #f0f2f5; }
+
         .post-body {
-            padding: 20px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #333;
+            padding: 20px; font-size: 1.05rem; line-height: 1.8; color: #333;
+            max-height: 100px; overflow: hidden; position: relative;
+        }
+        .post-body.expanded { max-height: none; }
+        .post-body .read-more {
+            color: var(--primary); cursor: pointer; font-weight: bold;
+            display: inline-block; margin-top: 5px;
         }
         .post-actions {
-            padding: 12px 16px;
-            border-top: 1px solid #f0f0f0;
-            display: flex;
-            gap: 20px;
-            color: #65676b;
-            font-size: 0.9rem;
+            padding: 12px 16px; border-top: 1px solid #f0f0f0;
+            display: flex; gap: 15px; color: #65676b; font-size: 0.9rem;
+            align-items: center;
         }
-        .post-actions span { cursor: pointer; }
+        .post-actions span {
+            display: flex; align-items: center; gap: 5px; cursor: pointer;
+            padding: 5px 10px; border-radius: 8px; transition: 0.2s;
+        }
+        .post-actions span:hover { background: #f0f2f5; }
+        .action-liked { color: var(--primary); font-weight: bold; }
 
-        /* ========== أزرار مخصصة ========== */
+        .comments-section {
+            border-top: 1px solid #f0f0f0; padding: 12px 16px;
+            display: none;
+        }
+        .comments-section.active { display: block; }
+        .comments-list { margin-bottom: 10px; }
+        .comment-item {
+            background: #f0f2f5; border-radius: 15px; padding: 8px 12px;
+            margin: 8px 0; font-size: 0.9rem;
+        }
+        .comment-author { font-weight: bold; margin-left: 5px; }
+        .comment-input {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .comment-input input {
+            flex: 1; padding: 10px 15px; border-radius: 25px; border: 1px solid #ddd;
+            font-family: inherit; outline: none;
+        }
+        .comment-input button {
+            background: var(--primary); border: none; color: white;
+            padding: 8px 18px; border-radius: 25px; cursor: pointer;
+            font-family: inherit; font-weight: bold;
+        }
+
         .custom-buttons button {
-            background: var(--primary);
-            border: none;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 25px;
-            margin: 5px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            transition: 0.3s;
+            background: var(--primary); border: none; color: white;
+            padding: 8px 18px; border-radius: 25px; margin: 5px; cursor: pointer;
+            font-family: inherit; font-weight: bold; transition: 0.3s;
         }
         .custom-buttons button:hover { background: var(--primary-dark); }
 
-        /* ========== الفوتر ========== */
         footer {
-            background: white;
-            border-top: 1px solid #ddd;
-            padding: 20px;
-            text-align: center;
-            color: #65676b;
-            margin-top: 40px;
+            background: white; border-top: 1px solid #ddd; padding: 20px;
+            text-align: center; color: #65676b; margin-top: 40px;
         }
         #year { cursor: default; user-select: none; }
 
-        /* ========== لوحة التحكم (مخفي) ========== */
+        /* لوحة التحكم */
         #admin-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 9999;
-            overflow-y: auto;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999; overflow-y: auto; padding: 20px;
         }
         .admin-panel {
-            background: white;
-            max-width: 700px;
-            margin: 30px auto;
-            border-radius: 20px;
-            padding: 30px;
-            color: #1c1e21;
-            font-family: 'Cairo', sans-serif;
+            background: white; max-width: 700px; margin: 30px auto;
+            border-radius: 20px; padding: 30px; color: #1c1e21;
         }
         .admin-panel h2 { color: var(--primary); margin-bottom: 20px; }
         .tab-btns { display: flex; gap: 10px; margin-bottom: 25px; }
         .tab-btn {
-            background: #f0f0f0;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            background: #f0f0f0; border: none; padding: 10px 20px;
+            border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
         .tab-btn.active { background: var(--primary); color: white; }
         .tab { display: none; }
         .tab.active { display: block; }
         .admin-input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 0.95rem;
+            width: 100%; padding: 12px; margin: 10px 0;
+            border: 1px solid #ddd; border-radius: 12px; font-family: inherit;
         }
         textarea.admin-input { resize: vertical; min-height: 80px; }
         .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            margin: 8px 4px;
-            transition: 0.3s;
+            background: var(--primary); color: white; border: none;
+            padding: 10px 24px; border-radius: 25px; cursor: pointer;
+            font-weight: bold; margin: 8px 4px; transition: 0.3s;
         }
         .btn:hover { background: var(--primary-dark); }
         .btn-del { background: #d9534f; }
         .btn-del:hover { background: #c9302c; }
         .field-row {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
+            background: #f9f9f9; padding: 15px; border-radius: 12px;
+            margin: 10px 0; display: flex; justify-content: space-between;
             align-items: center;
         }
-        .close-btn {
-            float: left;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #aaa;
-        }
+        .close-btn { float: left; background: none; border: none; font-size: 2rem; cursor: pointer; color: #aaa; }
+        .filter-bar { margin-bottom: 20px; display: none; }
+        .filter-bar.active { display: flex; gap: 10px; align-items: center; }
+        .filter-bar span { font-weight: bold; }
+        .filter-bar button { background: #e4e6eb; border: none; padding: 6px 16px; border-radius: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<!-- الشريط العلوي -->
+<!-- شريط علوي -->
 <div class="topbar">
     <div class="logo" id="siteTitle">ALSHANFRICC</div>
-    <div class="search-box">
-        <span>🔍</span> <input type="text" placeholder="ابحث في الموقع..." disabled>
-    </div>
-    <div class="admin-icon" title="لوحة التحكم (اضغط 3 مرات على السنة في الأسفل)">👤</div>
+    <div class="search-box"><span>🔍</span> <input type="text" placeholder="ابحث..." disabled></div>
+    <div class="admin-icon" title="لوحة التحكم">👤</div>
 </div>
 
 <!-- صورة الغلاف -->
@@ -285,21 +217,23 @@
 
 <!-- التخطيط الرئيسي -->
 <div class="main-layout">
-    <!-- العمود الأيسر -->
     <aside class="left-sidebar">
-        <h4>استكشف</h4>
+        <h4>القائمة</h4>
         <ul id="navLinks">
-            <li>🏠 الرئيسية</li>
+            <li>🏠 جميع المقالات</li>
+            <li id="savedFilter">🔖 المحفوظات</li>
         </ul>
         <div class="custom-buttons" id="headerButtons"></div>
     </aside>
 
-    <!-- المحتوى (آخر المنشورات) -->
-    <main class="feed" id="fieldsContainer">
-        <!-- تملأ بالجافاسكريبت -->
+    <main class="feed" id="feedContainer">
+        <div class="filter-bar" id="filterBar">
+            <span id="filterText"></span>
+            <button onclick="clearFilter()">✕ عرض الكل</button>
+        </div>
+        <!-- المقالات ستظهر هنا -->
     </main>
 
-    <!-- العمود الأيمن -->
     <aside class="right-sidebar">
         <h4>عن الموقع</h4>
         <p id="subtitleDisplay" style="color:#555; margin:15px 0;"></p>
@@ -307,7 +241,6 @@
     </aside>
 </div>
 
-<!-- الفوتر -->
 <footer>
     <div class="custom-buttons" id="footerButtons"></div>
     <p>© <span id="year">2026</span> جميع الحقوق محفوظة</p>
@@ -320,76 +253,74 @@
         <h2>لوحة التحكم</h2>
         <div class="tab-btns">
             <button class="tab-btn active" data-tab="tab-settings">الإعدادات</button>
-            <button class="tab-btn" data-tab="tab-fields">المجالات (المنشورات)</button>
+            <button class="tab-btn" data-tab="tab-fields">المقالات</button>
             <button class="tab-btn" data-tab="tab-buttons">الأزرار</button>
         </div>
 
-        <!-- تبويب الإعدادات -->
         <div id="tab-settings" class="tab active">
             <label>اسم الموقع</label>
-            <input class="admin-input" id="inputSiteName" placeholder="اسم الموقع">
+            <input class="admin-input" id="inputSiteName">
             <label>النص الفرعي</label>
-            <input class="admin-input" id="inputSubtitle" placeholder="يظهر في العمود الأيمن">
+            <input class="admin-input" id="inputSubtitle">
             <label>اللون الأساسي</label>
             <input class="admin-input" type="color" id="inputPrimaryColor">
             <label>الخط</label>
             <select class="admin-input" id="inputFont">
-                <option value="Cairo">Cairo</option>
-                <option value="Tajawal">Tajawal</option>
-                <option value="Amiri">Amiri</option>
+                <option value="Cairo">Cairo</option><option value="Tajawal">Tajawal</option><option value="Amiri">Amiri</option>
             </select>
             <button class="btn" onclick="saveSettings()">حفظ الإعدادات</button>
         </div>
 
-        <!-- تبويب المجالات -->
         <div id="tab-fields" class="tab">
-            <input class="admin-input" id="fieldTitle" placeholder="عنوان المنشور">
-            <textarea class="admin-input" id="fieldContent" placeholder="محتوى المنشور"></textarea>
-            <button class="btn" onclick="addField()">إضافة منشور</button>
+            <input class="admin-input" id="fieldTitle" placeholder="عنوان المقال">
+            <input class="admin-input" id="fieldAuthor" placeholder="اسم الكاتب">
+            <textarea class="admin-input" id="fieldContent" placeholder="نص المقال"></textarea>
+            <input class="admin-input" id="fieldTags" placeholder="وسوم (مفصولة بفواصل)">
+            <button class="btn" onclick="addField()">إضافة مقال</button>
             <div id="fieldsList"></div>
         </div>
 
-        <!-- تبويب الأزرار -->
         <div id="tab-buttons" class="tab">
-            <label>أزرار الشريط الأيسر (HTML)</label>
-            <textarea class="admin-input" id="headerBtnsCode" placeholder="<button>تواصل</button>"></textarea>
+            <label>أزرار الشريط الأيسر</label>
+            <textarea class="admin-input" id="headerBtnsCode"></textarea>
             <label>أزرار العمود الأيمن</label>
-            <textarea class="admin-input" id="bodyBtnsCode" placeholder="<button>إعلان</button>"></textarea>
+            <textarea class="admin-input" id="bodyBtnsCode"></textarea>
             <label>أزرار الفوتر</label>
-            <textarea class="admin-input" id="footerBtnsCode" placeholder="<button>سياسة الخصوصية</button>"></textarea>
+            <textarea class="admin-input" id="footerBtnsCode"></textarea>
             <button class="btn" onclick="saveButtons()">حفظ الأزرار</button>
         </div>
     </div>
 </div>
 
 <script>
-// ========== البيانات والتخزين ==========
-const STORAGE = 'alshanfricc_fb';
+// ========== التخزين والنموذج ==========
+const STORAGE = 'alshanfricc_full';
 const DEFAULT = {
     siteName: 'ALSHANFRICC',
     subtitle: 'مساحة الأناقة والمعرفة',
     primaryColor: '#c48b4c',
     font: 'Cairo',
-    fields: [],
+    fields: [],        // { id, title, content, author, date, likes, comments:[], tags:[] }
     headerButtons: '',
     bodyButtons: '',
-    footerButtons: ''
+    footerButtons: '',
+    savedPosts: [],    // قائمة IDs المحفوظة
+    likedPosts: []     // قائمة IDs التي أعجب بها المستخدم (لعدم تكرار الإعجاب)
 };
-let data = JSON.parse(localStorage.getItem(STORAGE)) || {...DEFAULT};
+let data = JSON.parse(localStorage.getItem(STORAGE)) || JSON.parse(JSON.stringify(DEFAULT));
+if (!data.savedPosts) data.savedPosts = [];
+if (!data.likedPosts) data.likedPosts = [];
 function save() { localStorage.setItem(STORAGE, JSON.stringify(data)); }
 
-// ========== الخلفية المتجددة (288 صورة) ==========
-const TOTAL_IMAGES = 288;
-const INTERVAL_MIN = 5;
+// ========== الخلفية المتجددة ==========
+const TOTAL_IMAGES = 288, INTERVAL_MIN = 5;
 const images = Array.from({length: TOTAL_IMAGES}, (_, i) => `https://picsum.photos/seed/nature${i+1}/1920/600`);
 function updateCover() {
     const now = new Date();
     const minutes = now.getHours() * 60 + now.getMinutes();
-    const idx = Math.floor(minutes / INTERVAL_MIN) % TOTAL_IMAGES;
-    document.getElementById('coverPhoto').style.backgroundImage = `url('${images[idx]}')`;
+    document.getElementById('coverPhoto').style.backgroundImage = `url('${images[Math.floor(minutes / INTERVAL_MIN) % TOTAL_IMAGES]}')`;
 }
-updateCover();
-setInterval(updateCover, 60000);
+updateCover(); setInterval(updateCover, 60000);
 
 // ========== تطبيق الإعدادات ==========
 function applySettings() {
@@ -398,48 +329,205 @@ function applySettings() {
     document.getElementById('subtitleDisplay').textContent = data.subtitle;
     document.body.style.fontFamily = `${data.font}, sans-serif`;
 }
-function renderFields() {
-    const container = document.getElementById('fieldsContainer');
-    const nav = document.getElementById('navLinks');
+
+// ========== عرض المقالات (مع الفلاتر) ==========
+let currentFilter = { type: 'all', value: null }; // { type: 'author'|'tags'|'saved'|'all', value }
+
+function renderPosts() {
+    const container = document.getElementById('feedContainer');
+    const filterBar = document.getElementById('filterBar');
     container.innerHTML = '';
-    nav.innerHTML = '<li>🏠 الرئيسية</li>';
-    if (data.fields.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#65676b;padding:40px;">لا توجد منشورات بعد. أضف مجالات من لوحة التحكم.</p>';
+    let posts = [...data.fields];
+
+    // تطبيق الفلتر
+    if (currentFilter.type === 'author') {
+        posts = posts.filter(p => p.author === currentFilter.value);
+        filterBar.innerHTML = `<span id="filterText">📝 مقالات الكاتب: ${currentFilter.value}</span><button onclick="clearFilter()">✕ عرض الكل</button>`;
+        filterBar.classList.add('active');
+    } else if (currentFilter.type === 'tags') {
+        const tag = currentFilter.value.toLowerCase();
+        posts = posts.filter(p => p.tags && p.tags.some(t => t.toLowerCase() === tag));
+        filterBar.innerHTML = `<span id="filterText">🏷️ مقالات عن: ${currentFilter.value}</span><button onclick="clearFilter()">✕ عرض الكل</button>`;
+        filterBar.classList.add('active');
+    } else if (currentFilter.type === 'saved') {
+        posts = posts.filter(p => data.savedPosts.includes(p.id));
+        filterBar.innerHTML = `<span id="filterText">🔖 المقالات المحفوظة</span><button onclick="clearFilter()">✕ عرض الكل</button>`;
+        filterBar.classList.add('active');
     } else {
-        data.fields.forEach(field => {
-            // كرت منشور فيسبوكي
-            const card = document.createElement('div');
-            card.className = 'post-card';
-            card.innerHTML = `
-                <div class="post-header">
-                    <div class="post-avatar">${field.title.charAt(0)}</div>
-                    <div class="post-info">
-                        <h5>${field.title}</h5>
-                        <small>الآن</small>
-                    </div>
-                </div>
-                <div class="post-body">${field.content}</div>
-                <div class="post-actions">
-                    <span>👍 أعجبني</span> <span>💬 تعليق</span> <span>↗️ مشاركة</span>
-                </div>`;
-            container.appendChild(card);
-            // رابط في القائمة اليسرى
-            const li = document.createElement('li');
-            li.textContent = '📌 ' + field.title;
-            li.onclick = () => document.querySelector('.cover').scrollIntoView({behavior:'smooth'});
-            nav.appendChild(li);
-        });
+        filterBar.classList.remove('active');
     }
+
+    // قائمة التنقل اليسرى
+    document.getElementById('navLinks').innerHTML = `
+        <li onclick="clearFilter()">🏠 جميع المقالات</li>
+        <li onclick="applyFilter('saved')">🔖 المحفوظات (${data.savedPosts.length})</li>
+    `;
+    data.fields.forEach(f => {
+        // لا نضيف كل مقال في القائمة، لكن يمكن إضافة الكتّاب والوسوم
+    });
+
+    if (posts.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#65676b;padding:40px;">لا توجد مقالات.</p>';
+        return;
+    }
+
+    posts.slice(0, 20).forEach(post => { // عرض أول 20 فقط
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.innerHTML = buildPostHTML(post);
+        container.appendChild(card);
+
+        // ربط الأحداث
+        const cardEl = container.lastElementChild;
+        // زر قراءة المزيد
+        cardEl.querySelector('.read-more').addEventListener('click', () => {
+            cardEl.querySelector('.post-body').classList.toggle('expanded');
+        });
+        // زر الإعجاب
+        cardEl.querySelector('.like-btn').addEventListener('click', () => toggleLike(post.id));
+        // زر التعليقات (إظهار/إخفاء)
+        cardEl.querySelector('.comment-toggle').addEventListener('click', () => {
+            cardEl.querySelector('.comments-section').classList.toggle('active');
+        });
+        // إرسال تعليق
+        cardEl.querySelector('.comment-send').addEventListener('click', () => {
+            const input = cardEl.querySelector('.comment-input input');
+            if (input.value.trim()) {
+                addComment(post.id, input.value.trim());
+                input.value = '';
+            }
+        });
+        // القائمة المنسدلة
+        const dropdownBtn = cardEl.querySelector('.dropdown-btn');
+        const dropdownMenu = cardEl.querySelector('.dropdown-menu');
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // إغلاق جميع القوائم الأخرى
+            document.querySelectorAll('.dropdown-menu.active').forEach(m => m.classList.remove('active'));
+            dropdownMenu.classList.toggle('active');
+        });
+        // خيارات القائمة
+        cardEl.querySelector('.save-later').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSave(post.id);
+            dropdownMenu.classList.remove('active');
+        });
+        cardEl.querySelector('.author-posts').addEventListener('click', (e) => {
+            e.stopPropagation();
+            applyFilter('author', post.author);
+            dropdownMenu.classList.remove('active');
+        });
+        cardEl.querySelector('.related-posts').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (post.tags && post.tags.length > 0) {
+                applyFilter('tags', post.tags[0]); // أول وسم
+            }
+            dropdownMenu.classList.remove('active');
+        });
+    });
+
+    // إغلاق القوائم عند النقر خارجها
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.dropdown-menu.active').forEach(m => m.classList.remove('active'));
+    });
 }
+
+function buildPostHTML(post) {
+    const isLiked = data.likedPosts.includes(post.id);
+    const likeBtnClass = isLiked ? 'action-liked' : '';
+    const truncatedText = post.content.length > 150 ? post.content.substring(0,150) + '...' : post.content;
+    const needReadMore = post.content.length > 150;
+    const dateStr = post.date ? new Date(post.date).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' }) : '';
+    return `
+        <div class="post-header">
+            <div class="post-avatar">${post.author ? post.author.charAt(0) : 'A'}</div>
+            <div class="post-info">
+                <h5>${post.title}</h5>
+                <div class="post-meta">
+                    <span>${post.author || 'مجهول'}</span>
+                    <span class="time">· ${dateStr || 'الآن'}</span>
+                </div>
+            </div>
+            <button class="dropdown-btn">⋯</button>
+            <div class="dropdown-menu">
+                <div class="dropdown-item save-later">🔖 قراءة لاحقاً</div>
+                <div class="dropdown-item author-posts">👤 مقالات الكاتب</div>
+                <div class="dropdown-item related-posts">🔗 مقالات ذات صلة</div>
+            </div>
+        </div>
+        <div class="post-body">
+            ${needReadMore ? truncatedText : post.content}
+            ${needReadMore ? '<span class="read-more">قراءة المزيد</span>' : ''}
+        </div>
+        <div class="post-actions">
+            <span class="like-btn ${likeBtnClass}">👍 إعجاب (${post.likes || 0})</span>
+            <span class="comment-toggle">💬 تعليق (${post.comments ? post.comments.length : 0})</span>
+        </div>
+        <div class="comments-section">
+            <div class="comments-list">${(post.comments || []).map(c => `<div class="comment-item"><span class="comment-author">${c.author}</span> ${c.text}</div>`).join('')}</div>
+            <div class="comment-input">
+                <input type="text" placeholder="اكتب تعليقاً...">
+                <button class="comment-send">نشر</button>
+            </div>
+        </div>
+    `;
+}
+
+// ========== وظائف التفاعل ==========
+function toggleLike(postId) {
+    const idx = data.fields.findIndex(p => p.id === postId);
+    if (idx === -1) return;
+    const post = data.fields[idx];
+    const likedIdx = data.likedPosts.indexOf(postId);
+    if (likedIdx > -1) {
+        // إلغاء الإعجاب
+        data.likedPosts.splice(likedIdx, 1);
+        post.likes = Math.max(0, (post.likes || 0) - 1);
+    } else {
+        data.likedPosts.push(postId);
+        post.likes = (post.likes || 0) + 1;
+    }
+    save();
+    renderPosts(); // إعادة رسم القائمة مع الحفاظ على الفلتر
+}
+
+function addComment(postId, text) {
+    const post = data.fields.find(p => p.id === postId);
+    if (!post) return;
+    if (!post.comments) post.comments = [];
+    post.comments.push({ author: 'زائر', text, date: new Date().toISOString() });
+    save();
+    renderPosts();
+}
+
+function toggleSave(postId) {
+    const idx = data.savedPosts.indexOf(postId);
+    if (idx > -1) data.savedPosts.splice(idx, 1);
+    else data.savedPosts.push(postId);
+    save();
+    // تحديث القائمة اليسرى فقط
+    document.getElementById('navLinks').innerHTML = `
+        <li onclick="clearFilter()">🏠 جميع المقالات</li>
+        <li onclick="applyFilter('saved')">🔖 المحفوظات (${data.savedPosts.length})</li>
+    `;
+}
+
+function applyFilter(type, value = null) {
+    currentFilter = { type, value };
+    renderPosts();
+    window.scrollTo({ top: document.getElementById('feedContainer').offsetTop - 80, behavior: 'smooth' });
+}
+
+function clearFilter() {
+    currentFilter = { type: 'all', value: null };
+    renderPosts();
+}
+
+// ========== أزرار مخصصة ==========
 function renderButtons() {
     document.getElementById('headerButtons').innerHTML = data.headerButtons;
     document.getElementById('bodyButtons').innerHTML = data.bodyButtons;
     document.getElementById('footerButtons').innerHTML = data.footerButtons;
-}
-function refreshUI() {
-    applySettings();
-    renderFields();
-    renderButtons();
 }
 
 // ========== لوحة التحكم ==========
@@ -449,6 +537,8 @@ document.getElementById('year').addEventListener('click', () => {
     if (clicks === 3) { openAdmin(); clicks = 0; }
     setTimeout(() => clicks = 0, 1000);
 });
+document.querySelector('.admin-icon').addEventListener('click', openAdmin);
+
 function openAdmin() {
     document.getElementById('admin-overlay').style.display = 'block';
     document.getElementById('inputSiteName').value = data.siteName;
@@ -467,22 +557,42 @@ function saveSettings() {
     data.subtitle = document.getElementById('inputSubtitle').value;
     data.primaryColor = document.getElementById('inputPrimaryColor').value;
     data.font = document.getElementById('inputFont').value;
-    save(); refreshUI(); closeAdmin();
+    save(); applySettings(); renderButtons(); closeAdmin();
 }
 
 function addField() {
     const title = document.getElementById('fieldTitle').value.trim();
     const content = document.getElementById('fieldContent').value.trim();
-    if (!title) return alert('أدخل عنوان المنشور');
-    data.fields.push({ id: Date.now().toString(), title, content });
-    save(); refreshUI();
+    const author = document.getElementById('fieldAuthor').value.trim() || 'مجهول';
+    const tagsStr = document.getElementById('fieldTags').value.trim();
+    if (!title) return alert('أدخل عنوان المقال');
+    const newPost = {
+        id: Date.now().toString(),
+        title,
+        content,
+        author,
+        date: new Date().toISOString(),
+        likes: 0,
+        comments: [],
+        tags: tagsStr ? tagsStr.split(',').map(t => t.trim()) : []
+    };
+    data.fields.push(newPost);
+    save();
     document.getElementById('fieldTitle').value = '';
     document.getElementById('fieldContent').value = '';
+    document.getElementById('fieldAuthor').value = '';
+    document.getElementById('fieldTags').value = '';
     renderAdminFields();
+    renderPosts();
 }
 function deleteField(id) {
     data.fields = data.fields.filter(f => f.id !== id);
-    save(); refreshUI(); renderAdminFields();
+    // تنظيف المحفوظات والإعجابات
+    data.savedPosts = data.savedPosts.filter(savedId => savedId !== id);
+    data.likedPosts = data.likedPosts.filter(likedId => likedId !== id);
+    save();
+    renderAdminFields();
+    renderPosts();
 }
 function renderAdminFields() {
     const list = document.getElementById('fieldsList');
@@ -490,7 +600,7 @@ function renderAdminFields() {
     data.fields.forEach(f => {
         const div = document.createElement('div');
         div.className = 'field-row';
-        div.innerHTML = `<span>${f.title}</span>`;
+        div.innerHTML = `<span>${f.title} (${f.author})</span>`;
         const del = document.createElement('button');
         del.className = 'btn btn-del'; del.textContent = 'حذف';
         del.onclick = () => deleteField(f.id);
@@ -498,15 +608,14 @@ function renderAdminFields() {
         list.appendChild(div);
     });
 }
-
 function saveButtons() {
     data.headerButtons = document.getElementById('headerBtnsCode').value;
     data.bodyButtons = document.getElementById('bodyBtnsCode').value;
     data.footerButtons = document.getElementById('footerBtnsCode').value;
-    save(); refreshUI(); closeAdmin();
+    save(); renderButtons(); closeAdmin();
 }
 
-// تبويبات لوحة التحكم
+// تبويبات اللوحة
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -516,11 +625,10 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     });
 });
 
-// أيقونة المدير أيضاً تفتح اللوحة
-document.querySelector('.admin-icon').addEventListener('click', openAdmin);
-
-// البداية
-refreshUI();
+// ========== البداية ==========
+applySettings();
+renderButtons();
+renderPosts();
 </script>
 </body>
 </html>
